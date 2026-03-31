@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "authentication": "serviceAccount",
+        "documentId": {
+          "__rl": true,
+          "value": "15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o",
+          "mode": "list",
+          "cachedResultName": "Metacommerce",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 900943838,
+          "mode": "list",
+          "cachedResultName": "Orders",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o/edit#gid=900943838"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Phone",
+              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
+            },
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "En Revisión"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.6,
+      "position": [
+        656,
+        -272
+      ],
+      "id": "0ccc11b7-0949-470b-8224-241adfafc5ae",
+      "name": "Historial",
+      "credentials": {
+        "googleApi": {
+          "id": "2FEjmRx5LeBKQrQQ",
+          "name": "Google Service Account account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Historial": {
+      "ai_tool": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "38cf8ae391dbc0e126f1024f36344c4c59311c87e72f4f2365da94920fb40b96"
+  }
+}
