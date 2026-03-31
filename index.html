@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -10,86 +9,129 @@
     @media(min-width:768px){ .mobile{display:none;} .desktop{display:flex; height:100vh; align-items:center; justify-content:center; font-size:24px;} }
     nav { position:fixed; bottom:0; width:100%; background:#020617; display:flex; justify-content:space-around; padding:12px 0; border-top:1px solid #1e293b; }
     nav button { background:none; border:none; color:white; font-size:18px; }
-    .container { padding:20px; padding-bottom:100px; }
+    .container { padding:20px; padding-bottom:110px; }
     h1{font-size:28px;} h2{margin-top:0;} p{color:#94a3b8;}
     .card { background:#020617; border:1px solid #1e293b; border-radius:12px; padding:16px; margin-top:20px; }
     .price { font-size:24px; color:#22c55e; }
     .btn { width:100%; padding:14px; border-radius:10px; border:none; background:#22c55e; color:black; font-weight:bold; margin-top:10px; }
     .section{margin-top:30px;}
     .steps li{margin-bottom:10px;}
-    .highlight{color:#22c55e;}
+    .highlight{color:#22c55e;}/* Faucet Visual */
+.faucet-box { text-align:center; margin-top:20px; }
+.faucet { width:60px; height:60px; background:#475569; border-radius:10px; margin:0 auto; }
+.flow { width:20px; margin:10px auto; border-radius:10px; transition:all 0.3s ease; }
+.low { height:20px; background:#38bdf8; opacity:0.5; }
+.high { height:80px; background:#22c55e; box-shadow:0 0 15px #22c55e; }
+
+/* Switch */
+.switch { display:flex; align-items:center; justify-content:center; margin-top:10px; }
+.switch input { width:50px; height:25px; }
+
+/* Floating chat */
+.chat-float {
+  position:fixed;
+  right:15px;
+  bottom:80px;
+  background:#22c55e;
+  color:black;
+  padding:12px 16px;
+  border-radius:50px;
+  font-weight:bold;
+  border:none;
+}
+
+/* Modal */
+.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); }
+.modal iframe { width:100%; height:100%; border:none; }
+
   </style>
 </head>
-<body>
+<body><div class="mobile">
+  <div class="container"><h1>Sistema que vende por ti 24/7</h1>
+<p>Empieza gratis o escala con campañas probadas.</p>
 
-<div class="mobile">
-  <div class="container">
+<div class="card">
+  <h2>Activa tu sistema</h2>
+  <p>Webhook + agente + guías incluidas</p>
+  <button class="btn" onclick="comprar()">Activar gratis</button>
+</div>
 
-    <h1>Sistema que vende por ti 24/7</h1>
-    <p>Tú solo metes tráfico. El sistema responde y cierra ventas automáticamente.</p>
+<div class="section">
+  <h2>Cómo funciona</h2>
+  <ul class="steps">
+    <li>1. Activas el sistema</li>
+    <li>2. Recibes mensajes</li>
+    <li>3. El agente responde</li>
+    <li>4. Se generan ventas</li>
+  </ul>
+</div>
 
-    <div class="card">
-      <h2>Activa tu acceso</h2>
-      <p>Agente + productos + logística ya listos</p>
-      <div class="price">Gana por cada venta</div>
-      <button class="btn" onclick="comprar()">Quiero empezar hoy</button>
-    </div>
-
-    <div class="section">
-      <h2>Cómo funciona</h2>
-      <ul class="steps">
-        <li>1. Activas tu acceso</li>
-        <li>2. Recibes productos listos</li>
-        <li>3. Inviertes en anuncios</li>
-        <li>4. El sistema vende por ti</li>
-        <li>5. Ganas por cada pedido</li>
-      </ul>
-    </div>
-
-    <div class="section card">
-      <h2>Ejemplo real</h2>
-      <p>Inversión: $150 en ads</p>
-      <p>Ventas: $300 – $600</p>
-      <p class="highlight">Ganancia estimada positiva</p>
-    </div>
-
-    <div class="section">
-      <h2>Qué incluye</h2>
-      <ul>
-        <li>Agente que responde 24/7</li>
-        <li>Productos listos para vender</li>
-        <li>Logística incluida</li>
-        <li>Optimización continua</li>
-      </ul>
-    </div>
-
-    <div class="section">
-      <h2>Preguntas frecuentes</h2>
-      <p><b>¿Necesito experiencia?</b><br>No, el sistema hace la venta.</p>
-      <p><b>¿Tengo que hablar con clientes?</b><br>No, todo es automático.</p>
-      <p><b>¿Cuánto invertir?</b><br>Tú decides cuánto.</p>
-    </div>
-
-    <div class="section card">
-      <h2>Acceso limitado</h2>
-      <p>Solo pocos usuarios por ciudad para evitar saturación.</p>
-      <button class="btn" onclick="comprar()">Activar ahora</button>
-    </div>
-
+<!-- Faucet Visual -->
+<div class="section card">
+  <h2>Flujo de ventas</h2>
+  <div class="faucet-box">
+    <div class="faucet"></div>
+    <div id="flow" class="flow low"></div>
   </div>
+  <p id="flowText">Modo gratis — flujo limitado</p>
+
+  <div class="switch">
+    <span>Gratis</span>
+    <input type="checkbox" id="boostToggle">
+    <span>Boost</span>
+  </div>
+
+  <button class="btn" id="boostBtn" style="display:none;" onclick="comprar()">
+    Activar Boost
+  </button>
+</div>
+
+<div class="section card">
+  <h2>Boost</h2>
+  <p>Accede a anuncios probados + catálogo completo</p>
+  <p class="highlight">Más leads. Más ventas.</p>
+</div>
+
+  </div><button class="chat-float" onclick="openChat()">💬 Hablar ahora</button>
 
   <nav>
     <button onclick="openChat()">💬 Chat</button>
     <button onclick="comprar()">🛒 Comprar</button>
   </nav>
-</div>
+</div><div class="desktop">En construcción...</div><!-- Modal Chat --><div id="chatModal" class="modal">
+  <iframe src="https://TU_WEBHOOK_N8N_CHAT"></iframe>
+</div><script>
+const toggle = document.getElementById("boostToggle");
+const flow = document.getElementById("flow");
+const text = document.getElementById("flowText");
+const btn = document.getElementById("boostBtn");
+  // interacción boost
+toggle.addEventListener("change", () => {
+  if(toggle.checked){
+    flow.className = "flow high";
+    text.innerText = "Modo Boost — flujo constante de ventas";
+    btn.style.display = "block";
+  } else {
+    flow.className = "flow low";
+    text.innerText = "Modo gratis — flujo limitado";
+    btn.style.display = "none";
+  }
+});
 
-<div class="desktop">En construcción...</div>
+// simulación ventas
+typeMessages = ["Venta en Cancún hace 2 min","Nuevo lead recibido","Cliente interesado ahora"];
+setInterval(()=>{
+  const msg = typeMessages[Math.floor(Math.random()*typeMessages.length)];
+  console.log(msg);
+},4000);
 
-<script>
-function openChat(){ window.open("https://TU_WEBHOOK_N8N_CHAT","_blank"); }
-function comprar(){ alert("Conectar flujo de compra"); }
-</script>
+// chat modal
+function openChat(){
+  document.getElementById("chatModal").style.display = "block";
+}
 
-</body>
+function comprar(){
+  alert("Conectar flujo real de compra / onboarding");
+}
+</script></body>
 </html>
