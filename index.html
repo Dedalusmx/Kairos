@@ -15,31 +15,34 @@
     .btn { width:100%; padding:14px; border-radius:10px; border:none; background:#22c55e; color:black; font-weight:bold; margin-top:10px; }
     .section{margin-top:30px;}/* Faucet visual */
 .faucet-wrap { position:relative; height:220px; display:flex; flex-direction:column; align-items:center; }
-.faucet-img { width:110px; margin-top:10px; z-index: 1; }
+.faucet-img { width:110px; margin-top:10px; }
 
 .flow-zone {
   position: absolute;
-  top: 10px; /* AJUSTA según tu imagen */
-  left: 50%;
+  top: 70px; /* ajustado para salida desde boquilla */
+  left: 60%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 120px;
+  width: 120px;
+  height: 140px;
   pointer-events: none;
   overflow: visible;
+  z-index: 15;
 }
 
 .money {
   position:absolute;
   top:0;
   left:50%;
-  z-index; 10;
   transform:translateX(-50%);
   font-size:26px;
-  animation: fall linear forwards;
+  animation: fallDiagonal linear forwards;
+  z-index:20;
 }
 
-@keyframes fall {
-  0% { transform: translate(-50%, 0); opacity:1; }
+@keyframes fallDiagonal {
+  0% { transform: translate(-50%, 0) rotate(0deg); opacity:1; }
+  100% { transform: translate(30px, 140px) rotate(15deg); opacity:0; }
+}
   100% { transform: translate(-50%, 120px); opacity:0; }
 }
 
@@ -74,7 +77,7 @@
   <h2>Flujo de ventas</h2>
 
   <div class="faucet-wrap">
-    <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png" class="faucet-img" alt="grifo" />
+    <img src="grifo.png" class="faucet-img" alt="grifo" />
     <div id="flowZone" class="flow-zone"></div>
   </div>
 
@@ -104,12 +107,15 @@
     <button onclick="comprar()">🛒 Comprar</button>
   </nav>
 </div><div class="desktop">En construcción...</div><div id="chatModal" class="modal">
-  <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
+  <iframe src="https://TU_WEBHOOK_N8N_CHAT"></iframe>
 </div><script>
 const toggle = document.getElementById("boostToggle");
 const text = document.getElementById("flowText");
 const btn = document.getElementById("boostBtn");
 const flowZone = document.getElementById("flowZone");
+
+const icons = ["💸","💰","🪙"];
+
 function createMoney(speed=2000) {
   const money = document.createElement("div");
   money.innerText = icons[Math.floor(Math.random()*icons.length)];
@@ -152,4 +158,3 @@ function comprar(){
 }
 </script></body>
 </html>
-const icons = ["💸","💰","🪙"];
