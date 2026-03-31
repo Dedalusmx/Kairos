@@ -1,62 +1,95 @@
-{
-  "nodes": [
-    {
-      "parameters": {
-        "authentication": "serviceAccount",
-        "documentId": {
-          "__rl": true,
-          "value": "15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o",
-          "mode": "list",
-          "cachedResultName": "Metacommerce",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o/edit?usp=drivesdk"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": 900943838,
-          "mode": "list",
-          "cachedResultName": "Orders",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15YkUR6V2nmwlh4ElOGeRG7nRUu4fFQfK0gYw2XDRx2o/edit#gid=900943838"
-        },
-        "filtersUI": {
-          "values": [
-            {
-              "lookupColumn": "Phone",
-              "lookupValue": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('values0_Value', ``, 'string') }}"
-            },
-            {
-              "lookupColumn": "Status",
-              "lookupValue": "En Revisión"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "n8n-nodes-base.googleSheetsTool",
-      "typeVersion": 4.6,
-      "position": [
-        656,
-        -272
-      ],
-      "id": "0ccc11b7-0949-470b-8224-241adfafc5ae",
-      "name": "Historial",
-      "credentials": {
-        "googleApi": {
-          "id": "2FEjmRx5LeBKQrQQ",
-          "name": "Google Service Account account"
-        }
-      }
-    }
-  ],
-  "connections": {
-    "Historial": {
-      "ai_tool": [
-        []
-      ]
-    }
-  },
-  "pinData": {},
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "38cf8ae391dbc0e126f1024f36344c4c59311c87e72f4f2365da94920fb40b96"
-  }
-}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metacompras - Sistema de Ventas</title>
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#0f172a; color:#fff; }
+    .desktop { display:none; }
+    @media(min-width:768px){ .mobile{display:none;} .desktop{display:flex; height:100vh; align-items:center; justify-content:center; font-size:24px;} }
+    nav { position:fixed; bottom:0; width:100%; background:#020617; display:flex; justify-content:space-around; padding:12px 0; border-top:1px solid #1e293b; }
+    nav button { background:none; border:none; color:white; font-size:18px; }
+    .container { padding:20px; padding-bottom:100px; }
+    h1{font-size:28px;} h2{margin-top:0;} p{color:#94a3b8;}
+    .card { background:#020617; border:1px solid #1e293b; border-radius:12px; padding:16px; margin-top:20px; }
+    .price { font-size:24px; color:#22c55e; }
+    .btn { width:100%; padding:14px; border-radius:10px; border:none; background:#22c55e; color:black; font-weight:bold; margin-top:10px; }
+    .section{margin-top:30px;}
+    .steps li{margin-bottom:10px;}
+    .highlight{color:#22c55e;}
+  </style>
+</head>
+<body>
+
+<div class="mobile">
+  <div class="container">
+
+    <h1>Sistema que vende por ti 24/7</h1>
+    <p>Tú solo metes tráfico. El sistema responde y cierra ventas automáticamente.</p>
+
+    <div class="card">
+      <h2>Activa tu acceso</h2>
+      <p>Agente + productos + logística ya listos</p>
+      <div class="price">Gana por cada venta</div>
+      <button class="btn" onclick="comprar()">Quiero empezar hoy</button>
+    </div>
+
+    <div class="section">
+      <h2>Cómo funciona</h2>
+      <ul class="steps">
+        <li>1. Activas tu acceso</li>
+        <li>2. Recibes productos listos</li>
+        <li>3. Inviertes en anuncios</li>
+        <li>4. El sistema vende por ti</li>
+        <li>5. Ganas por cada pedido</li>
+      </ul>
+    </div>
+
+    <div class="section card">
+      <h2>Ejemplo real</h2>
+      <p>Inversión: $150 en ads</p>
+      <p>Ventas: $300 – $600</p>
+      <p class="highlight">Ganancia estimada positiva</p>
+    </div>
+
+    <div class="section">
+      <h2>Qué incluye</h2>
+      <ul>
+        <li>Agente que responde 24/7</li>
+        <li>Productos listos para vender</li>
+        <li>Logística incluida</li>
+        <li>Optimización continua</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <h2>Preguntas frecuentes</h2>
+      <p><b>¿Necesito experiencia?</b><br>No, el sistema hace la venta.</p>
+      <p><b>¿Tengo que hablar con clientes?</b><br>No, todo es automático.</p>
+      <p><b>¿Cuánto invertir?</b><br>Tú decides cuánto.</p>
+    </div>
+
+    <div class="section card">
+      <h2>Acceso limitado</h2>
+      <p>Solo pocos usuarios por ciudad para evitar saturación.</p>
+      <button class="btn" onclick="comprar()">Activar ahora</button>
+    </div>
+
+  </div>
+
+  <nav>
+    <button onclick="openChat()">💬 Chat</button>
+    <button onclick="comprar()">🛒 Comprar</button>
+  </nav>
+</div>
+
+<div class="desktop">En construcción...</div>
+
+<script>
+function openChat(){ window.open("https://TU_WEBHOOK_N8N_CHAT","_blank"); }
+function comprar(){ alert("Conectar flujo de compra"); }
+</script>
+
+</body>
+</html>
