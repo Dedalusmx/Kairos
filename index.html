@@ -104,7 +104,7 @@ position:absolute; top:0; left:57%; transform:translateX(-50%); font-size:24px; 
     <button onclick="openChat()">💬 Chat</button>
     <button onclick="comprar()">🛒 Comprar</button>
   </nav>
-</div><div class="desktop">En construcción...</div><div id="chatModal" class="modal">
+</div><div class="desktop">En construcción...</div><div id="chatModal" class="modal" onclick="closeChat()">
   <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
 </div><script>
 const toggle = document.getElementById("toggle");
@@ -157,10 +157,19 @@ toggle.addEventListener("click", () => {
 
 function openChat(){
   document.getElementById("chatModal").style.display = "block";
+
+  // ocultar grifo y animaciones
+  document.querySelector('.faucet-wrap').style.display = 'none';
 }
 
 function comprar(){
   alert("Conectar flujo real de compra / onboarding");
+}
+function closeChat(){
+  document.getElementById("chatModal").style.display = "none";
+
+  // restaurar grifo
+  document.querySelector('.faucet-wrap').style.display = 'block';
 }
 </script></body>
 </html>
