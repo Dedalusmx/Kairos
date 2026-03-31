@@ -1,195 +1,104 @@
-<!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html><html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Metacompras</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: sans-serif;
-            background: #020617;
-            color: #fff;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Metacompras</title>
+<style>
+body { margin:0; font-family:sans-serif; background:#020617; color:#fff; }.card { padding:20px; }
 
-        .card {
-            padding: 20px;
-        }
+/* NAVBAR */ .navbar { position:fixed; bottom:0; left:0; width:100%; height:60px; background:#020617; border-top:1px solid #1e293b; display:flex; justify-content:space-around; align-items:center; z-index:45; }
 
-        /* NAVBAR */
-        .navbar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 60px;
-            background: #020617;
-            border-top: 1px solid #1e293b;
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 999;
-        }
+/* MODAL */ .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:40; }
 
-        /* MODAL */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: 40;
-        }
+.modal-content { position:absolute; bottom:60px; width:100%; height:calc(100% - 60px); background:#fff; border-top-left-radius:16px; border-top-right-radius:16px; overflow:hidden;
 
-        .modal.show {
-            display: flex;
-        }
+transform:translateY(100%); transition:transform 0.3s ease; }
 
-        .modal-content {
-            position: absolute;
-            bottom: 60px;
-            width: 100%;
-            height: calc(100% - 60px);
-            background: #fff;
-            border-top-left-radius: 16px;
-            border-top-right-radius: 16px;
-            overflow: hidden;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-        }
+.modal.show .modal-content { transform:translateY(0); }
 
-        .modal.show .modal-content {
-            transform: translateY(0);
-        }
+.close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:none; border-radius:999px; padding:8px 12px; }
 
-        .close-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 60;
-            background: #020617;
-            color: #fff;
-            border: none;
-            border-radius: 999px;
-            padding: 8px 12px;
-            cursor: pointer;
-        }
+.modal iframe { width:100%; height:100%; border:none; }
 
-        .modal iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+/* FAUCET */ .faucet-wrap { text-align:center; margin-top:40px; }
 
-        /* FAUCET */
-        .faucet-wrap {
-            text-align: center;
-            margin-top: 40px;
-        }
+.money { position:absolute; left:55%; font-size:24px; animation: fall 2s linear infinite; }
 
-        .money {
-            position: absolute;
-            left: 55%;
-            font-size: 24px;
-            animation: fall 2s linear infinite;
-        }
+@keyframes fall { 0% { transform:translate(0,0); opacity:1; } 100% { transform:translate(40px,140px); opacity:0; } }
 
-        @keyframes fall {
-            0% {
-                transform: translate(0, 0);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(40px, 140px);
-                opacity: 0;
-            }
-        }
-    </style>
+</style>
 </head>
-<body>
-    <div class="card">
-        <h1>Activa tu sistema</h1>
-        <button onclick="openChat()">Abrir chat</button>
-    </div>
+<body><div class="card">
+  <h1>Activa tu sistema</h1>
+  <button onclick="openChat()">Abrir chat</button>
+</div><div class="faucet-wrap">
+  <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" width="150" />
+  <div class="money">💰</div>
+</div><div id="chatModal" class="modal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeChat()">✕</button>
+    <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
+  </div>
+</div><div class="navbar">
+  <span onclick="openChat()">💬 Chat</span>
+  <span>🛒 Comprar</span>
+</div><script>
+function openChat(){
+  const modal = document.getElementById("chatModal");
+  modal.style.display = "block";
 
-    <div class="faucet-wrap">
-        <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" width="150" />
-        <div class="money">💰</div>
-    </div>
+  setTimeout(()=>{
+    modal.classList.add("show");
+  },10);
 
-    <div id="chatModal" class="modal">
-        <div class="modal-content">
-            <button class="close-btn" onclick="closeChat()">✕</button>
-            <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
-        </div>
-    </div>
+  document.querySelector('.faucet-wrap').style.display = 'none';
+  document.body.style.overflow = 'hidden';
+}
 
-    <div class="navbar">
-        <span onclick="openChat()">💬 Chat</span>
-        <span>🛒 Comprar</span>
-    </div>
+function closeChat(){
+  const modal = document.getElementById("chatModal");
 
-    <script>
-        function openChat() {
-            const modal = document.getElementById("chatModal");
-            modal.style.display = "block";
+  modal.classList.remove("show");
 
-            setTimeout(() => {
-                modal.classList.add("show");
-            }, 10);
+  setTimeout(()=>{
+    modal.style.display = "none";
+  },300);
 
-            document.querySelector('.faucet-wrap').style.display = 'none';
-            document.body.style.overflow = 'hidden';
-        }
+  document.querySelector('.faucet-wrap').style.display = 'block';
+  document.body.style.overflow = 'auto';
+}
 
-        function closeChat() {
-            const modal = document.getElementById("chatModal");
-            modal.classList.remove("show");
+const modal = document.getElementById("chatModal");
+modal.addEventListener('click', function(e){
+  if(e.target === modal){ closeChat(); }
+});
 
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300);
+// SWIPE DOWN
+let startY = 0;
+const sheet = document.querySelector(".modal-content");
 
-            document.querySelector('.faucet-wrap').style.display = 'block';
-            document.body.style.overflow = 'auto';
-        }
+sheet.addEventListener("touchstart", e => {
+  startY = e.touches[0].clientY;
+});
 
-        const modal = document.getElementById("chatModal");
-        modal.addEventListener('click', function (e) {
-            if (e.target === modal) {
-                closeChat();
-            }
-        });
+sheet.addEventListener("touchmove", e => {
+  let moveY = e.touches[0].clientY;
+  let diff = moveY - startY;
 
-        // SWIPE DOWN
-        let startY = 0;
-        const sheet = document.querySelector(".modal-content");
+  if(diff > 0){
+    sheet.style.transform = `translateY(${diff}px)`;
+  }
+});
 
-        sheet.addEventListener("touchstart", e => {
-            startY = e.touches[0].clientY;
-        });
+sheet.addEventListener("touchend", e => {
+  let moveY = e.changedTouches[0].clientY;
+  let diff = moveY - startY;
 
-        sheet.addEventListener("touchmove", e => {
-            let moveY = e.touches[0].clientY;
-            let diff = moveY - startY;
-
-            if (diff > 0) {
-                sheet.style.transform = `translateY(${diff}px)`;
-            }
-        });
-
-        sheet.addEventListener("touchend", e => {
-            let moveY = e.changedTouches[0].clientY;
-            let diff = moveY - startY;
-
-            if (diff > 120) {
-                closeChat();
-            } else {
-                sheet.style.transform = `translateY(0)`;
-            }
-        });
-    </script>
-</body>
+  if(diff > 120){
+    closeChat();
+  } else {
+    sheet.style.transform = `translateY(0)`;
+  }
+});
+</script></body>
 </html>
