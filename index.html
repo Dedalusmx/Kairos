@@ -37,7 +37,6 @@ nav{
 .faucet-wrap{
   position:relative;
   height:260px;
-  text-align:center;
 }
 
 .faucet-img{
@@ -59,8 +58,8 @@ nav{
 .money{
   position:absolute;
   left:57%;
-  font-size:26px;
-  animation:fall 1.8s linear forwards;
+  font-size:24px;
+  animation:fall linear forwards;
   filter:drop-shadow(0 0 6px #22c55e);
 }
 
@@ -121,7 +120,6 @@ nav{
   border-top-left-radius:16px;
   border-top-right-radius:16px;
   overflow:hidden;
-
   transform:translateY(100%);
   transition:0.3s;
 }
@@ -154,7 +152,7 @@ iframe{
 
 <div class="container">
 
-<h2>Sistema que vende por ti</h2>
+<h2>Sistema que vende por ti 24/7</h2>
 
 <div class="faucet-wrap">
   <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" class="faucet-img">
@@ -172,7 +170,6 @@ iframe{
   <button>🛒 Comprar</button>
 </nav>
 
-<!-- MODAL -->
 <div id="chatModal" class="modal">
   <div class="modal-content">
     <button class="close-btn" onclick="closeChat()">✕</button>
@@ -203,7 +200,7 @@ setInterval(()=>{
     createMoney(900);
     createMoney(1000);
     createMoney(1100);
-  }else{
+  } else {
     createMoney(2200);
   }
 },300);
@@ -215,7 +212,7 @@ toggle.onclick = ()=>{
   if(isBoost){
     text.innerText="Boost: ventas constantes 🔥";
     flowZone.style.filter="drop-shadow(0 0 10px #22c55e)";
-  }else{
+  } else {
     text.innerText="Gratis: flujo bajo";
     flowZone.style.filter="none";
   }
