@@ -49,11 +49,9 @@ position:absolute; top:0; left:57%; transform:translateX(-50%); font-size:24px; 
 .toggle { width: 70px; height: 36px; background: #1e293b; border-radius: 999px; position: relative; margin: 20px auto; cursor: pointer; transition: all 0.3s ease; display:block; } .toggle::after { content: ''; width: 30px; height: 30px; background: white; position: absolute; top: 3px; left: 3px; border-radius: 50%; transition: all 0.3s ease; } .toggle.active { background: linear-gradient(135deg, #22c55e, #4ade80); box-shadow: 0 0 15px rgba(34,197,94,0.6); } .toggle.active::after { left: 37px; } .toggle::after { content: ''; width: 28px; height: 28px; background: white; position: absolute; top: 2px; left: 2px; border-radius: 50%; transition: 0.3s; } .toggle.active { background: #22c55e; box-shadow: 0 0 12px #22c55e; } .toggle.active::after { left: 34px; }
 
 .chat-float { display:none; }
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:50; }
-.modal-content { position:relative; width:100%; height:100%; }
-.close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:1px solid #1e293b; border-radius:999px; padding:8px 12px; font-size:16px; }
-.modal iframe { width:100%; height:100%; border:none; }
-.modal iframe { width:100%; height:100%; border:none; }
+.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:40; }
+
+.navbar { z-index:45; position:fixed; bottom:0; left:0; width:100%; } .modal-content { position:absolute; bottom:60px; width:100%; height:calc(100% - 60px); background:#fff; border-top-left-radius:16px; border-top-right-radius:16px; overflow:hidden; } .close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:1px solid #1e293b; border-radius:999px; padding:8px 12px; font-size:16px; } .modal iframe { width:100%; height:100%; border:none; } .modal-content { position:relative; width:100%; height:100%; } .close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:1px solid #1e293b; border-radius:999px; padding:8px 12px; font-size:16px; } .modal iframe { width:100%; height:100%; border:none; } .modal iframe { width:100%; height:100%; border:none; }
 
 #boostBtn { animation: pulse 1s infinite; }
 @keyframes pulse {
@@ -170,7 +168,11 @@ function openChat(){
 }
 
 // cerrar al tocar fondo oscuro
-document.getElementById("chatModal").addEventListener('click', function(){ closeChat(); });
+// cerrar solo si clic fuera del contenido
+const modal = document.getElementById("chatModal");
+modal.addEventListener('click', function(e){
+  if(e.target === modal){ closeChat(); }
+}); });
 
 function comprar(){
   alert("Conectar flujo real de compra / onboarding");
