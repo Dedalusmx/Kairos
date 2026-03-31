@@ -1,188 +1,104 @@
 <!DOCTYPE html><html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Metacompras - Sistema de Ventas</title>
-  <style>
-    body { margin:0; font-family: Arial, sans-serif; background:#0f172a; color:#fff; }
-    .desktop { display:none; }
-    @media(min-width:768px){ .mobile{display:none;} .desktop{display:flex; height:100vh; align-items:center; justify-content:center; font-size:24px;} }
-    nav { position:fixed; bottom:0; width:100%; background:#020617; display:flex; justify-content:space-around; padding:12px 0; border-top:1px solid #1e293b; }
-    nav button { background:none; border:none; color:white; font-size:18px; }
-    .container { padding:20px; padding-bottom:110px; }
-    h1{font-size:28px;} h2{margin-top:0;} p{color:#94a3b8;}
-    .card { background:#020617; border:1px solid #1e293b; border-radius:12px; padding:16px; margin-top:20px; }
-    .btn { width:100%; padding:14px; border-radius:10px; border:none; background:#22c55e; color:black; font-weight:bold; margin-top:10px; }
-    .section{margin-top:30px;}/* Faucet visual */
-.faucet-wrap { position:relative; height:260px; }
-.faucet-img {
-  width:160px;
-  position:absolute;
-  top:40px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:5;
-}
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Metacompras</title>
+<style>
+body { margin:0; font-family:sans-serif; background:#020617; color:#fff; }.card { padding:20px; }
 
-.flow-zone {
-  position:absolute;
-  top:85px;
-  left:57%;
-  width:120px;
-  height:160px;
-  pointer-events:none;
-  overflow:visible;
-  z-index:10;
-}
+/* NAVBAR */ .navbar { position:fixed; bottom:0; left:0; width:100%; height:60px; background:#020617; border-top:1px solid #1e293b; display:flex; justify-content:space-around; align-items:center; z-index:45; }
 
-.money {
+/* MODAL */ .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index:40; }
 
-position:absolute; top:0; left:57%; transform:translateX(-50%); font-size:24px; animation: fallDiagonal linear forwards; z-index:20; filter: drop-shadow(0 0 6px #22c55e); }
+.modal-content { position:absolute; bottom:60px; width:100%; height:calc(100% - 60px); background:#fff; border-top-left-radius:16px; border-top-right-radius:16px; overflow:hidden;
 
-@keyframes fallDiagonal {
-  0% { transform: translate(-50%, 0); opacity:1; }
-  100% { transform: translate(40px, 140px); opacity:0; }
-}
+transform:translateY(100%); transition:transform 0.3s ease; }
 
-/* Toggle switch */
+.modal.show .modal-content { transform:translateY(0); }
 
-.toggle { width: 70px; height: 36px; background: #1e293b; border-radius: 999px; position: relative; margin: 20px auto; cursor: pointer; transition: all 0.3s ease; display:block; } .toggle::after { content: ''; width: 30px; height: 30px; background: white; position: absolute; top: 3px; left: 3px; border-radius: 50%; transition: all 0.3s ease; } .toggle.active { background: linear-gradient(135deg, #22c55e, #4ade80); box-shadow: 0 0 15px rgba(34,197,94,0.6); } .toggle.active::after { left: 37px; } .toggle::after { content: ''; width: 28px; height: 28px; background: white; position: absolute; top: 2px; left: 2px; border-radius: 50%; transition: 0.3s; } .toggle.active { background: #22c55e; box-shadow: 0 0 12px #22c55e; } .toggle.active::after { left: 34px; }
+.close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:none; border-radius:999px; padding:8px 12px; }
 
-.chat-float { display:none; }
-.modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:40; }
+.modal iframe { width:100%; height:100%; border:none; }
 
-.navbar { z-index:45; position:fixed; bottom:0; left:0; width:100%; } .modal-content { position:absolute; bottom:60px; width:100%; height:calc(100% - 60px); background:#fff; border-top-left-radius:16px; border-top-right-radius:16px; overflow:hidden; } .close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:1px solid #1e293b; border-radius:999px; padding:8px 12px; font-size:16px; } .modal iframe { width:100%; height:100%; border:none; } .modal-content { position:relative; width:100%; height:100%; } .close-btn { position:absolute; top:10px; right:10px; z-index:60; background:#020617; color:#fff; border:1px solid #1e293b; border-radius:999px; padding:8px 12px; font-size:16px; } .modal iframe { width:100%; height:100%; border:none; } .modal iframe { width:100%; height:100%; border:none; }
+/* FAUCET */ .faucet-wrap { text-align:center; margin-top:40px; }
 
-#boostBtn { animation: pulse 1s infinite; }
-@keyframes pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
+.money { position:absolute; left:55%; font-size:24px; animation: fall 2s linear infinite; }
 
-  </style>
+@keyframes fall { 0% { transform:translate(0,0); opacity:1; } 100% { transform:translate(40px,140px); opacity:0; } }
+
+</style>
 </head>
-<body><div class="mobile">
-  <div class="container"><h1>Sistema que vende por ti 24/7</h1>
-<p>Empieza gratis o escala con campañas probadas.</p>
-
-<div class="card">
-  <h2>Activa tu sistema</h2>
-  <p>Webhook + agente + guías incluidas</p>
-  <button class="btn" onclick="comprar()">Activar gratis</button>
-</div>
-
-<div class="section card">
-  <h2>Flujo de ventas</h2>
-
-  <div class="faucet-wrap">
-    <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" class="faucet-img" />
-    <div id="flowZone" class="flow-zone"></div>
-  </div>
-
-  <p id="flowText">Gratis: flujo bajo</p>
-
-  <div id="toggle" class="toggle"></div>
-  <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px; color:#94a3b8;">
-    <span>Gratis</span>
-    <span style="color:#22c55e;">Boost</span>
-  </div>
-
-  <button class="btn" id="boostBtn" style="display:none;" onclick="comprar()">
-    Activar Boost
-  </button>
-</div>
-
-<div class="section card">
-  <h2>Boost</h2>
-  <p>Accede a anuncios probados + catálogo completo</p>
-  <p style="color:#22c55e;">Más leads. Más ventas.</p>
-</div>
-
-  </div><button class="chat-float" onclick="openChat()">💬 Hablar ahora</button>
-
-  <nav>
-    <button onclick="openChat()">💬 Chat</button>
-    <button onclick="comprar()">🛒 Comprar</button>
-  </nav>
-</div><div class="desktop">En construcción...</div><div id="chatModal" class="modal">
-  <div class="modal-content" onclick="event.stopPropagation()">
+<body><div class="card">
+  <h1>Activa tu sistema</h1>
+  <button onclick="openChat()">Abrir chat</button>
+</div><div class="faucet-wrap">
+  <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" width="150" />
+  <div class="money">💰</div>
+</div><div id="chatModal" class="modal">
+  <div class="modal-content">
     <button class="close-btn" onclick="closeChat()">✕</button>
     <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
   </div>
+</div><div class="navbar">
+  <span onclick="openChat()">💬 Chat</span>
+  <span>🛒 Comprar</span>
 </div><script>
-const toggle = document.getElementById("toggle");
-const text = document.getElementById("flowText");
-const btn = document.getElementById("boostBtn");
-const flowZone = document.getElementById("flowZone");
-
-let isBoost = false;
-const icons = ["💰","🪙","💵"];
-
-function createMoney(speed=2000) {
-  const money = document.createElement("div");
-  money.innerText = icons[Math.floor(Math.random()*icons.length)];
-  money.className = "money";
-  money.style.animationDuration = speed + "ms";
-  flowZone.appendChild(money);
-  setTimeout(() => money.remove(), speed);
-}
-
-setInterval(() => {
-  if(isBoost){
-    flowZone.style.filter = "drop-shadow(0 0 10px #22c55e)";
-    createMoney(900);
-    createMoney(1000);
-    createMoney(1100);
-  } else {
-    flowZone.style.filter = "none";
-    createMoney(2200);
-  }
-}, 300);
-
-// toggle interaction
-toggle.addEventListener("click", () => {
-  toggle.style.transform = "scale(1.1)";
-  setTimeout(()=>{ toggle.style.transform = "scale(1)"; },150);
-  isBoost = !isBoost;
-  toggle.classList.toggle("active");
-
-  if(isBoost){
-    text.innerText = "Boost: ventas constantes 🔥";
-    btn.style.display = "block";
-    document.body.style.background = "#020617";
-    if (navigator.vibrate) navigator.vibrate(50);
-  } else {
-    text.innerText = "Gratis: flujo bajo";
-    btn.style.display = "none";
-    document.body.style.background = "#0f172a";
-  }
-});
-
 function openChat(){
   const modal = document.getElementById("chatModal");
   modal.style.display = "block";
-  // ocultar grifo y animaciones
+
+  setTimeout(()=>{
+    modal.classList.add("show");
+  },10);
+
   document.querySelector('.faucet-wrap').style.display = 'none';
   document.body.style.overflow = 'hidden';
 }
 
-// cerrar al tocar fondo oscuro
-// cerrar solo si clic fuera del contenido
-const modal = document.getElementById("chatModal");
-modal.addEventListener('click', function(e){
-  if(e.target === modal){ closeChat(); }
-}); });
-
-function comprar(){
-  alert("Conectar flujo real de compra / onboarding");
-}
 function closeChat(){
   const modal = document.getElementById("chatModal");
-  modal.style.display = "none";
-  // restaurar grifo
+
+  modal.classList.remove("show");
+
+  setTimeout(()=>{
+    modal.style.display = "none";
+  },300);
+
   document.querySelector('.faucet-wrap').style.display = 'block';
   document.body.style.overflow = 'auto';
 }
+
+const modal = document.getElementById("chatModal");
+modal.addEventListener('click', function(e){
+  if(e.target === modal){ closeChat(); }
+});
+
+// SWIPE DOWN
+let startY = 0;
+const sheet = document.querySelector(".modal-content");
+
+sheet.addEventListener("touchstart", e => {
+  startY = e.touches[0].clientY;
+});
+
+sheet.addEventListener("touchmove", e => {
+  let moveY = e.touches[0].clientY;
+  let diff = moveY - startY;
+
+  if(diff > 0){
+    sheet.style.transform = `translateY(${diff}px)`;
+  }
+});
+
+sheet.addEventListener("touchend", e => {
+  let moveY = e.changedTouches[0].clientY;
+  let diff = moveY - startY;
+
+  if(diff > 120){
+    closeChat();
+  } else {
+    sheet.style.transform = `translateY(0)`;
+  }
+});
 </script></body>
 </html>
