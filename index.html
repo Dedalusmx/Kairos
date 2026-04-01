@@ -6,41 +6,53 @@
 <title>Metacompras</title>
 
 <style>
+*{box-sizing:border-box;}
+
 body{
   margin:0;
-  font-family:Arial;
+  font-family:Arial, sans-serif;
   background:#0f172a;
-  color:#fff;
-  text-align:center;
+  color:white;
 }
 
-/* CONTENIDO */
+/* CONTENEDOR */
 .container{
   padding:20px;
   padding-bottom:90px;
+  text-align:center;
+}
+
+/* TITULO */
+h2{
+  margin-top:10px;
 }
 
 /* CTA */
 .cta{
+  width:100%;
+  padding:14px;
   background:#22c55e;
   border:none;
-  padding:14px;
   border-radius:10px;
-  width:100%;
   font-weight:bold;
-  margin:15px 0;
+  margin:20px 0;
 }
 
 /* GRIFO */
 .faucet{
-  margin-top:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
 }
 
 .faucet img{
   width:140px;
 }
 
+/* FLUJO */
 .flow{
+  width:100%;
+  max-width:120px;
   height:120px;
   position:relative;
   overflow:hidden;
@@ -51,13 +63,13 @@ body{
   position:absolute;
   left:50%;
   transform:translateX(-50%);
-  font-size:24px;
+  font-size:22px;
   animation:fall linear forwards;
 }
 
 @keyframes fall{
-  0%{top:0; opacity:1;}
-  100%{top:120px; opacity:0;}
+  from{top:0; opacity:1;}
+  to{top:120px; opacity:0;}
 }
 
 /* TOGGLE */
@@ -68,14 +80,13 @@ body{
   border-radius:999px;
   margin:20px auto;
   position:relative;
-  cursor:pointer;
 }
 
 .toggle::after{
   content:'';
   width:26px;
   height:26px;
-  background:#fff;
+  background:white;
   position:absolute;
   top:2px;
   left:2px;
@@ -107,39 +118,7 @@ nav button{
   background:none;
   border:none;
   color:white;
-}
-
-/* MODAL */
-.modal{
-  display:none;
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-}
-
-.modal-content{
-  position:absolute;
-  bottom:60px;
-  width:100%;
-  height:80%;
-  background:#fff;
-  border-radius:16px 16px 0 0;
-  overflow:hidden;
-  transform:translateY(100%);
-  transition:0.3s;
-}
-
-.modal.show .modal-content{
-  transform:translateY(0);
-}
-
-iframe{
-  width:100%;
-  height:100%;
-  border:none;
+  font-size:16px;
 }
 </style>
 </head>
@@ -168,43 +147,24 @@ iframe{
   <button onclick="openChat()">🛒 Comprar</button>
 </nav>
 
-<!-- MODAL -->
-<div id="modal" class="modal">
-  <div class="modal-content">
-    <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
-  </div>
-</div>
-
 <script>
 const flow = document.getElementById("flow");
 const toggle = document.getElementById("toggle");
 const text = document.getElementById("text");
 
 let boost = false;
-let interval;
 
 /* DINERO */
-function dropMoney(speed){
+function drop(){
   const el = document.createElement("div");
   el.className="money";
   el.innerText="💰";
-  el.style.animationDuration = speed + "ms";
+  el.style.animationDuration = (boost ? 800 : 2000) + "ms";
   flow.appendChild(el);
-  setTimeout(()=>el.remove(), speed);
+  setTimeout(()=>el.remove(),2000);
 }
 
-function start(){
-  interval = setInterval(()=>{
-    dropMoney(boost ? 800 : 2000);
-  },300);
-}
-
-function stop(){
-  clearInterval(interval);
-  flow.innerHTML="";
-}
-
-start();
+setInterval(drop,400);
 
 /* TOGGLE */
 toggle.onclick=()=>{
@@ -215,21 +175,8 @@ toggle.onclick=()=>{
 
 /* CHAT */
 function openChat(){
-  const m = document.getElementById("modal");
-  stop();
-  m.style.display="block";
-  setTimeout(()=>m.classList.add("show"),10);
+  alert("Aquí conectas tu chat");
 }
-
-document.getElementById("modal").onclick = function(e){
-  if(e.target===this){
-    this.classList.remove("show");
-    setTimeout(()=>{
-      this.style.display="none";
-      start();
-    },300);
-  }
-};
 </script>
 
 </body>
