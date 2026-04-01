@@ -27,10 +27,29 @@ nav{
   border-top:1px solid #1e293b;
 }
 
+nav button{
+  background:none;
+  border:none;
+  color:white;
+  font-size:16px;
+}
+
 /* CONTENT */
 .container{
   padding:20px;
   padding-bottom:100px;
+}
+
+/* CTA */
+.cta{
+  width:100%;
+  padding:14px;
+  background:#22c55e;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  font-size:16px;
+  margin-top:10px;
 }
 
 /* FAUCET */
@@ -59,7 +78,7 @@ nav{
   position:absolute;
   left:57%;
   font-size:26px;
-  animation:fall linear forwards;
+  animation:fall 2s linear forwards;
   filter:drop-shadow(0 0 6px #22c55e);
 }
 
@@ -120,7 +139,6 @@ nav{
   border-top-left-radius:16px;
   border-top-right-radius:16px;
   overflow:hidden;
-
   transform:translateY(100%);
   transition:0.3s;
 }
@@ -153,7 +171,9 @@ iframe{
 
 <div class="container">
 
-<h2>Sistema que vende por ti 24/7</h2>
+<h2>Activa un sistema que cierra ventas automáticamente</h2>
+
+<button class="cta" onclick="openChat()">Activar sistema gratis</button>
 
 <div class="faucet-wrap">
   <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" class="faucet-img">
@@ -168,7 +188,7 @@ iframe{
 
 <nav>
   <button onclick="openChat()">💬 Chat</button>
-  <button>🛒 Comprar</button>
+  <button onclick="openChat()">🛒 Comprar</button>
 </nav>
 
 <!-- MODAL -->
@@ -186,10 +206,11 @@ const text = document.getElementById("flowText");
 
 let isBoost = false;
 let intervalID = null;
+let isModalOpen = false;
 
 const icons = ["💰","🪙","💵"];
 
-/* ===== FLOW ===== */
+/* FLOW */
 
 function createMoney(speed=2000){
   const el = document.createElement("div");
@@ -207,22 +228,24 @@ function startFlow(){
     if(isBoost){
       createMoney(900);
       createMoney(1000);
-      createMoney(1100);
     } else {
       createMoney(2200);
     }
-  },300);
+  },400);
 }
 
 function stopFlow(){
   clearInterval(intervalID);
   intervalID = null;
-  flowZone.innerHTML = "";
+
+  while(flowZone.firstChild){
+    flowZone.removeChild(flowZone.firstChild);
+  }
 }
 
 startFlow();
 
-/* ===== TOGGLE ===== */
+/* TOGGLE */
 
 toggle.onclick = ()=>{
   isBoost = !isBoost;
@@ -237,26 +260,37 @@ toggle.onclick = ()=>{
   }
 };
 
-/* ===== CHAT ===== */
+/* CHAT */
 
 function openChat(){
+  if(isModalOpen) return;
+  isModalOpen = true;
+
   const modal = document.getElementById("chatModal");
 
   stopFlow();
 
   modal.style.display="block";
-  setTimeout(()=>modal.classList.add("show"),10);
+
+  requestAnimationFrame(()=>{
+    modal.classList.add("show");
+  });
 
   document.querySelector('.faucet-wrap').style.display="none";
   document.body.style.overflow="hidden";
 }
 
 function closeChat(){
+  if(!isModalOpen) return;
+
   const modal = document.getElementById("chatModal");
 
   modal.classList.remove("show");
 
-  setTimeout(()=>modal.style.display="none",300);
+  setTimeout(()=>{
+    modal.style.display="none";
+    isModalOpen = false;
+  },300);
 
   document.querySelector('.faucet-wrap').style.display="block";
   document.body.style.overflow="auto";
