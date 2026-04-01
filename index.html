@@ -8,9 +8,87 @@
 <style>
 body{
   margin:0;
-  font-family:sans-serif;
+  font-family:Arial;
   background:#0f172a;
-  color:white;
+  color:#fff;
+  text-align:center;
+}
+
+/* CONTENIDO */
+.container{
+  padding:20px;
+  padding-bottom:90px;
+}
+
+/* CTA */
+.cta{
+  background:#22c55e;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  width:100%;
+  font-weight:bold;
+  margin:15px 0;
+}
+
+/* GRIFO */
+.faucet{
+  margin-top:20px;
+}
+
+.faucet img{
+  width:140px;
+}
+
+.flow{
+  height:120px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* DINERO */
+.money{
+  position:absolute;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:24px;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  0%{top:0; opacity:1;}
+  100%{top:120px; opacity:0;}
+}
+
+/* TOGGLE */
+.toggle{
+  width:60px;
+  height:30px;
+  background:#1e293b;
+  border-radius:999px;
+  margin:20px auto;
+  position:relative;
+  cursor:pointer;
+}
+
+.toggle::after{
+  content:'';
+  width:26px;
+  height:26px;
+  background:#fff;
+  position:absolute;
+  top:2px;
+  left:2px;
+  border-radius:50%;
+  transition:0.3s;
+}
+
+.toggle.active{
+  background:#22c55e;
+}
+
+.toggle.active::after{
+  left:32px;
 }
 
 /* NAV */
@@ -23,99 +101,12 @@ nav{
   display:flex;
   justify-content:space-around;
   align-items:center;
-  z-index:50;
-  border-top:1px solid #1e293b;
 }
 
 nav button{
   background:none;
   border:none;
   color:white;
-  font-size:16px;
-}
-
-/* CONTENT */
-.container{
-  padding:20px;
-  padding-bottom:100px;
-}
-
-/* CTA */
-.cta{
-  width:100%;
-  padding:14px;
-  background:#22c55e;
-  border:none;
-  border-radius:10px;
-  font-weight:bold;
-  font-size:16px;
-  margin-top:10px;
-}
-
-/* FAUCET */
-.faucet-wrap{
-  position:relative;
-  height:260px;
-}
-
-.faucet-img{
-  width:160px;
-  position:absolute;
-  top:40px;
-  left:50%;
-  transform:translateX(-50%);
-}
-
-.flow-zone{
-  position:absolute;
-  top:90px;
-  left:52%;
-  width:120px;
-  height:150px;
-}
-
-.money{
-  position:absolute;
-  left:57%;
-  font-size:26px;
-  animation:fall 2s linear forwards;
-  filter:drop-shadow(0 0 6px #22c55e);
-}
-
-@keyframes fall{
-  0%{transform:translate(-50%,0);opacity:1;}
-  100%{transform:translate(40px,140px);opacity:0;}
-}
-
-/* TOGGLE */
-.toggle{
-  width:70px;
-  height:36px;
-  background:#1e293b;
-  border-radius:999px;
-  margin:20px auto;
-  position:relative;
-  cursor:pointer;
-}
-
-.toggle::after{
-  content:'';
-  width:30px;
-  height:30px;
-  background:white;
-  position:absolute;
-  top:3px;
-  left:3px;
-  border-radius:50%;
-  transition:0.3s;
-}
-
-.toggle.active{
-  background:linear-gradient(135deg,#22c55e,#4ade80);
-}
-
-.toggle.active::after{
-  left:37px;
 }
 
 /* MODAL */
@@ -127,17 +118,15 @@ nav button{
   width:100%;
   height:100%;
   background:rgba(0,0,0,0.6);
-  z-index:40;
 }
 
 .modal-content{
   position:absolute;
   bottom:60px;
   width:100%;
-  height:calc(100% - 60px);
-  background:white;
-  border-top-left-radius:16px;
-  border-top-right-radius:16px;
+  height:80%;
+  background:#fff;
+  border-radius:16px 16px 0 0;
   overflow:hidden;
   transform:translateY(100%);
   transition:0.3s;
@@ -145,18 +134,6 @@ nav button{
 
 .modal.show .modal-content{
   transform:translateY(0);
-}
-
-.close-btn{
-  position:absolute;
-  top:10px;
-  right:10px;
-  z-index:10;
-  background:black;
-  color:white;
-  border:none;
-  border-radius:50%;
-  padding:8px 12px;
 }
 
 iframe{
@@ -171,16 +148,16 @@ iframe{
 
 <div class="container">
 
-<h2>Activa un sistema que cierra ventas automáticamente</h2>
+<h2>Sistema que vende por ti</h2>
 
-<button class="cta" onclick="openChat()">Activar sistema gratis</button>
+<button class="cta" onclick="openChat()">Activar ahora</button>
 
-<div class="faucet-wrap">
-  <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207" class="faucet-img">
-  <div id="flowZone" class="flow-zone"></div>
+<div class="faucet">
+  <img src="https://cdn.shopify.com/s/files/1/0602/2417/6173/files/image-56_jpg.png?v=1774992207">
+  <div id="flow" class="flow"></div>
 </div>
 
-<p id="flowText">Gratis: flujo bajo</p>
+<p id="text">Modo gratis</p>
 
 <div id="toggle" class="toggle"></div>
 
@@ -192,117 +169,67 @@ iframe{
 </nav>
 
 <!-- MODAL -->
-<div id="chatModal" class="modal">
+<div id="modal" class="modal">
   <div class="modal-content">
-    <button class="close-btn" onclick="closeChat()">✕</button>
     <iframe src="https://n8n-production-3be9.up.railway.app/webhook/fbdd43e5-4241-4192-9cc0-db29579c792f/chat"></iframe>
   </div>
 </div>
 
 <script>
-const flowZone = document.getElementById("flowZone");
+const flow = document.getElementById("flow");
 const toggle = document.getElementById("toggle");
-const text = document.getElementById("flowText");
+const text = document.getElementById("text");
 
-let isBoost = false;
-let intervalID = null;
-let isModalOpen = false;
+let boost = false;
+let interval;
 
-const icons = ["💰","🪙","💵"];
-
-/* FLOW */
-
-function createMoney(speed=2000){
+/* DINERO */
+function dropMoney(speed){
   const el = document.createElement("div");
   el.className="money";
-  el.innerText = icons[Math.floor(Math.random()*icons.length)];
-  el.style.animationDuration = speed+"ms";
-  flowZone.appendChild(el);
+  el.innerText="💰";
+  el.style.animationDuration = speed + "ms";
+  flow.appendChild(el);
   setTimeout(()=>el.remove(), speed);
 }
 
-function startFlow(){
-  if(intervalID) return;
-
-  intervalID = setInterval(()=>{
-    if(isBoost){
-      createMoney(900);
-      createMoney(1000);
-    } else {
-      createMoney(2200);
-    }
-  },400);
+function start(){
+  interval = setInterval(()=>{
+    dropMoney(boost ? 800 : 2000);
+  },300);
 }
 
-function stopFlow(){
-  clearInterval(intervalID);
-  intervalID = null;
-
-  while(flowZone.firstChild){
-    flowZone.removeChild(flowZone.firstChild);
-  }
+function stop(){
+  clearInterval(interval);
+  flow.innerHTML="";
 }
 
-startFlow();
+start();
 
 /* TOGGLE */
-
-toggle.onclick = ()=>{
-  isBoost = !isBoost;
+toggle.onclick=()=>{
+  boost=!boost;
   toggle.classList.toggle("active");
-
-  if(isBoost){
-    text.innerText="Boost: ventas constantes 🔥";
-    flowZone.style.filter="drop-shadow(0 0 10px #22c55e)";
-  } else {
-    text.innerText="Gratis: flujo bajo";
-    flowZone.style.filter="none";
-  }
+  text.innerText = boost ? "Modo boost 🔥" : "Modo gratis";
 };
 
 /* CHAT */
-
 function openChat(){
-  if(isModalOpen) return;
-  isModalOpen = true;
-
-  const modal = document.getElementById("chatModal");
-
-  stopFlow();
-
-  modal.style.display="block";
-
-  requestAnimationFrame(()=>{
-    modal.classList.add("show");
-  });
-
-  document.querySelector('.faucet-wrap').style.display="none";
-  document.body.style.overflow="hidden";
+  const m = document.getElementById("modal");
+  stop();
+  m.style.display="block";
+  setTimeout(()=>m.classList.add("show"),10);
 }
 
-function closeChat(){
-  if(!isModalOpen) return;
-
-  const modal = document.getElementById("chatModal");
-
-  modal.classList.remove("show");
-
-  setTimeout(()=>{
-    modal.style.display="none";
-    isModalOpen = false;
-  },300);
-
-  document.querySelector('.faucet-wrap').style.display="block";
-  document.body.style.overflow="auto";
-
-  startFlow();
-}
-
-document.getElementById("chatModal").addEventListener("click", function(e){
-  if(e.target === this){
-    closeChat();
+document.getElementById("modal").onclick = function(e){
+  if(e.target===this){
+    this.classList.remove("show");
+    setTimeout(()=>{
+      this.style.display="none";
+      start();
+    },300);
   }
-});
+};
 </script>
 
 </body>
