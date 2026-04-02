@@ -1,1567 +1,784 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kairós Core — Automatiza tu WhatsApp sin API ni conocimientos técnicos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #050a06;
-    --bg2: #080f09;
-    --green: #25d366;
-    --green-glow: rgba(37,211,102,0.35);
-    --green-dim: #1a9e4a;
-    --red: #e53e3e;
-    --red-dim: rgba(229,62,62,0.15);
-    --text: #e8f5e9;
-    --muted: #6b8c72;
-    --card: rgba(255,255,255,0.03);
-    --border: rgba(37,211,102,0.12);
-    --font-display: 'Syne', sans-serif;
-    --font-body: 'DM Sans', sans-serif;
-  }
+<!DOCTYPE html>  <html lang="es">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  
+<title>Kairós Core — Genera ingresos desde tu WhatsApp, sin vender</title>  
+<link rel="preconnect" href="https://fonts.googleapis.com">  
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">  
+<style>  
+  :root {  
+    --bg: #050a06;  
+    --bg2: #080f09;  
+    --green: #25d366;  
+    --green-glow: rgba(37,211,102,0.35);  
+    --green-dim: #1a9e4a;  
+    --red: #e53e3e;  
+    --red-dim: rgba(229,62,62,0.15);  
+    --text: #e8f5e9;  
+    --muted: #6b8c72;  
+    --card: rgba(255,255,255,0.03);  
+    --border: rgba(37,211,102,0.12);  
+    --font-display: 'Syne', sans-serif;  
+    --font-body: 'DM Sans', sans-serif;  
+  }  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE OVERLAY ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.4;
-  }
-
-  section { position: relative; z-index: 1; }
-
-  .container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
-
-  /* ─── NAVBAR ─── */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: rgba(5,10,6,0.85);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .nav-logo {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--green);
-    letter-spacing: -0.5px;
-  }
-  .nav-logo span { color: var(--text); }
-  .nav-badge {
-    font-size: 0.7rem;
-    background: var(--red-dim);
-    border: 1px solid var(--red);
-    color: var(--red);
-    padding: 3px 10px;
-    border-radius: 20px;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    font-weight: 500;
-    animation: pulse-red 2s infinite;
-  }
-  @keyframes pulse-red {
-    0%,100% { opacity: 1; }
-    50% { opacity: 0.6; }
-  }
-
-  /* ─── HERO ─── */
-  #hero {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 100px 20px 60px;
-    text-align: center;
-    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,211,102,0.07) 0%, transparent 70%);
-  }
-  .hero-eyebrow {
-    display: inline-block;
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--green);
-    background: rgba(37,211,102,0.08);
-    border: 1px solid var(--border);
-    padding: 5px 14px;
-    border-radius: 20px;
-    margin-bottom: 24px;
-  }
-  .hero-headline {
-    font-family: var(--font-display);
-    font-size: clamp(2.4rem, 10vw, 4rem);
-    font-weight: 800;
-    line-height: 1.05;
-    letter-spacing: -1.5px;
-    color: #fff;
-    margin-bottom: 18px;
-  }
-  .hero-headline .green { color: var(--green); }
-  .hero-subline {
-    font-size: 1.25rem;
-    color: var(--muted);
-    margin-bottom: 8px;
-    font-weight: 300;
-  }
-  .hero-subline strong { color: var(--text); font-weight: 500; }
-  #typing-word {
-    color: var(--green);
-    font-weight: 600;
-    border-right: 2px solid var(--green);
-    padding-right: 2px;
-    animation: blink 0.8s step-end infinite;
-    min-width: 80px;
-    display: inline-block;
-  }
-  @keyframes blink { 50% { border-color: transparent; } }
-
-  .hero-sub {
-    font-size: 0.95rem;
-    color: var(--muted);
-    max-width: 380px;
-    margin: 12px auto 28px;
-    line-height: 1.6;
-  }
-  .hero-bullets {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    align-items: center;
-    margin-bottom: 32px;
-  }
-  .hero-bullet {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.9rem;
-    color: var(--text);
-  }
-  .hero-bullet::before {
-    content: '✓';
-    width: 20px; height: 20px;
-    background: rgba(37,211,102,0.15);
-    border: 1px solid var(--green);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.65rem;
-    color: var(--green);
-    flex-shrink: 0;
-  }
-
-  /* ─── BUTTONS ─── */
-  .btn-primary {
-    display: inline-block;
-    background: var(--green);
-    color: #000;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1rem;
-    padding: 16px 36px;
-    border-radius: 14px;
-    text-decoration: none;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 0 32px var(--green-glow), 0 4px 16px rgba(0,0,0,0.4);
-    transition: transform 0.15s, box-shadow 0.15s;
-    letter-spacing: -0.3px;
-  }
-  .btn-primary:hover {
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 48px var(--green-glow), 0 8px 24px rgba(0,0,0,0.5);
-  }
-  .btn-primary:active { transform: scale(0.98); }
-
-  /* ─── LIVE TICKER ─── */
-  .ticker-bar {
-    background: rgba(37,211,102,0.06);
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 12px 0;
-    overflow: hidden;
-    position: relative;
-  }
-  .ticker-inner {
-    display: flex;
-    gap: 40px;
-    white-space: nowrap;
-    animation: ticker 22s linear infinite;
-  }
-  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-  .ticker-item {
-    font-size: 0.78rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-shrink: 0;
-  }
-  .ticker-item .dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--green);
-    animation: pulse-dot 1.5s infinite;
-  }
-  @keyframes pulse-dot {
-    0%,100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-  .ticker-item strong { color: var(--green); }
-
-  /* ─── SECTION TITLES ─── */
-  .sec-label {
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: var(--green);
-    margin-bottom: 10px;
-  }
-  .sec-title {
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 6vw, 2.4rem);
-    font-weight: 800;
-    letter-spacing: -1px;
-    line-height: 1.1;
-    color: #fff;
-    margin-bottom: 12px;
-  }
-  .sec-sub {
-    font-size: 0.95rem;
-    color: var(--muted);
-    max-width: 420px;
-    margin: 0 auto 40px;
-  }
-
-  /* ─── DEMO WHATSAPP ─── */
-  #demo {
-    padding: 80px 0;
-    text-align: center;
-  }
-  .wapp-phone {
-    max-width: 340px;
-    margin: 0 auto;
-    background: #111b12;
-    border-radius: 28px;
-    overflow: hidden;
-    border: 1px solid rgba(37,211,102,0.2);
-    box-shadow: 0 0 60px rgba(37,211,102,0.1), 0 24px 48px rgba(0,0,0,0.6);
-  }
-  .wapp-header {
-    background: #1f2c20;
-    padding: 14px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-  }
-  .wapp-avatar {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--green), #1a9e4a);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: #000;
-    font-family: var(--font-display);
-  }
-  .wapp-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
-  .wapp-status { font-size: 0.7rem; color: var(--green); }
-  .wapp-body {
-    padding: 14px 12px;
-    min-height: 380px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    overflow: hidden;
-  }
-  .wapp-msg {
-    max-width: 78%;
-    padding: 9px 12px;
-    border-radius: 12px;
-    font-size: 0.82rem;
-    line-height: 1.45;
-    opacity: 0;
-    transform: translateY(10px);
-    transition: opacity 0.35s, transform 0.35s;
-  }
-  .wapp-msg.show { opacity: 1; transform: translateY(0); }
-  .wapp-msg.client {
-    align-self: flex-start;
-    background: #2a2f2a;
-    color: #ddd;
-    border-bottom-left-radius: 3px;
-  }
-  .wapp-msg.bot {
-    align-self: flex-end;
-    background: #1f3320;
-    color: #c8f0d0;
-    border-bottom-right-radius: 3px;
-    border: 1px solid rgba(37,211,102,0.15);
-  }
-  .wapp-msg.confirm {
-    align-self: flex-end;
-    background: linear-gradient(135deg, #1a4a24, #0d2e14);
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-weight: 600;
-    font-size: 0.8rem;
-    max-width: 88%;
-    border-radius: 12px;
-    border-bottom-right-radius: 3px;
-    text-align: right;
-  }
-  .wapp-typing {
-    align-self: flex-end;
-    background: #1f3320;
-    padding: 10px 14px;
-    border-radius: 12px;
-    border-bottom-right-radius: 3px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    display: flex; gap: 4px; align-items: center;
-  }
-  .wapp-typing.show { opacity: 1; }
-  .wapp-typing span {
-    width: 6px; height: 6px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: typing-dot 1.2s infinite;
-  }
-  .wapp-typing span:nth-child(2) { animation-delay: 0.2s; }
-  .wapp-typing span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typing-dot {
-    0%,80%,100% { transform: scale(0.7); opacity: 0.4; }
-    40% { transform: scale(1); opacity: 1; }
-  }
-  .wapp-tag {
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-top: 2px;
-    text-align: right;
-  }
-  .wapp-tag.left { text-align: left; }
-  .demo-restart {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 14px;
-    cursor: pointer;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    color: var(--muted);
-    display: block;
-    margin: 12px auto 0;
-  }
-  .demo-restart:hover { color: var(--green); }
-
-  /* ─── PRODUCT INTRO ─── */
-  #product {
-    padding: 80px 0;
-    text-align: center;
-    background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(37,211,102,0.05) 0%, transparent 70%);
-  }
-  .product-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 32px 24px;
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-  }
-  .product-card::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 20%; right: 20%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--green), transparent);
-  }
-  .product-icon {
-    width: 56px; height: 56px;
-    background: rgba(37,211,102,0.12);
-    border: 1px solid rgba(37,211,102,0.3);
-    border-radius: 16px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.5rem;
-    margin: 0 auto 16px;
-  }
-  .product-name {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #fff;
-    letter-spacing: -0.5px;
-    margin-bottom: 6px;
-  }
-  .product-name .green { color: var(--green); }
-  .product-desc {
-    font-size: 0.9rem;
-    color: var(--muted);
-    line-height: 1.6;
-    margin-bottom: 20px;
-  }
-  .product-features {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    text-align: left;
-  }
-  .pf-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    font-size: 0.88rem;
-    color: var(--text);
-    background: rgba(37,211,102,0.04);
-    border: 1px solid rgba(37,211,102,0.08);
-    padding: 10px 14px;
-    border-radius: 10px;
-  }
-  .pf-icon { color: var(--green); font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
-
-  /* ─── HOW IT WORKS ─── */
-  #how {
-    padding: 80px 0;
-    text-align: center;
-  }
-  .steps {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    max-width: 480px;
-    margin: 0 auto;
-  }
-  .step {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px 20px;
-    display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    text-align: left;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.3s, background 0.3s;
-  }
-  .step:hover {
-    border-color: rgba(37,211,102,0.3);
-    background: rgba(37,211,102,0.03);
-  }
-  .step-num {
-    font-family: var(--font-display);
-    font-size: 2rem;
-    font-weight: 800;
-    color: rgba(37,211,102,0.15);
-    line-height: 1;
-    flex-shrink: 0;
-    width: 36px;
-  }
-  .step-content {}
-  .step-title {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 4px;
-  }
-  .step-desc { font-size: 0.85rem; color: var(--muted); }
-  .step-arrow {
-    position: absolute;
-    right: 16px; top: 50%;
-    transform: translateY(-50%);
-    color: var(--green);
-    opacity: 0.5;
-    font-size: 0.9rem;
-  }
-
-  /* ─── SCARCITY ─── */
-  #scarcity {
-    padding: 70px 0;
-    text-align: center;
-  }
-  .scarcity-box {
-    background: linear-gradient(135deg, rgba(229,62,62,0.06), rgba(229,62,62,0.03));
-    border: 1px solid rgba(229,62,62,0.25);
-    border-radius: 20px;
-    padding: 32px 24px;
-    max-width: 480px;
-    margin: 0 auto;
-    position: relative;
-    overflow: hidden;
-  }
-  .scarcity-box::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 20%; right: 20%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--red), transparent);
-  }
-  .scarcity-icon { font-size: 2rem; margin-bottom: 12px; }
-  .scarcity-title {
-    font-family: var(--font-display);
-    font-size: 1.35rem;
-    font-weight: 800;
-    color: #fff;
-    margin-bottom: 10px;
-    letter-spacing: -0.5px;
-  }
-  .scarcity-text { font-size: 0.9rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
-  .scarcity-rules {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 24px;
-    text-align: left;
-  }
-  .sr-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.85rem;
-    color: var(--text);
-    padding: 8px 12px;
-    background: rgba(229,62,62,0.05);
-    border-radius: 8px;
-  }
-  .sr-item .sr-icon { color: var(--red); font-size: 0.85rem; }
-
-  /* ─── ACTIVITY / PROOF ─── */
-  #proof {
-    padding: 70px 0;
-    text-align: center;
-  }
-  .proof-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    max-width: 400px;
-    margin: 0 auto 28px;
-  }
-  .proof-stat {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 18px 14px;
-  }
-  .proof-stat .num {
-    font-family: var(--font-display);
-    font-size: 1.9rem;
-    font-weight: 800;
-    color: var(--green);
-    letter-spacing: -1px;
-    line-height: 1;
-  }
-  .proof-stat .label { font-size: 0.73rem; color: var(--muted); margin-top: 4px; }
-  .live-feed {
-    max-width: 400px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .lf-item {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.8rem;
-    text-align: left;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: opacity 0.4s, transform 0.4s;
-  }
-  .lf-item.show { opacity: 1; transform: translateX(0); }
-  .lf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse-dot 2s infinite; }
-  .lf-text { color: var(--text); flex: 1; }
-  .lf-time { color: var(--muted); font-size: 0.7rem; }
-
-  /* ─── NO NECESITAS ─── */
-  #noneed {
-    padding: 70px 0;
-    text-align: center;
-  }
-  .noneed-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    max-width: 420px;
-    margin: 0 auto;
-  }
-  .noneed-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: var(--card);
-    border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 12px;
-    padding: 14px 16px;
-    text-align: left;
-    font-size: 0.9rem;
-    color: var(--text);
-  }
-  .noneed-x {
-    width: 24px; height: 24px;
-    background: rgba(229,62,62,0.12);
-    border: 1px solid rgba(229,62,62,0.3);
-    border-radius: 6px;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--red);
-    font-size: 0.7rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  /* ─── FLOW MENTION ─── */
-  #flow {
-    padding: 60px 0;
-    text-align: center;
-  }
-  .flow-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(37,211,102,0.05);
-    border: 1px solid var(--border);
-    border-radius: 40px;
-    padding: 14px 24px;
-    font-size: 0.88rem;
-    color: var(--muted);
-    max-width: 400px;
-  }
-  .flow-pill strong { color: var(--green); }
-  .flow-pill .icon { font-size: 1.1rem; }
-
-  /* ─── CTA FINAL ─── */
-  #cta-final {
-    padding: 80px 0;
-    text-align: center;
-    background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(37,211,102,0.07) 0%, transparent 70%);
-  }
-  .cta-final-box {
-    max-width: 480px;
-    margin: 0 auto;
-    padding: 40px 24px;
-    background: var(--card);
-    border: 1px solid rgba(37,211,102,0.2);
-    border-radius: 24px;
-    position: relative;
-    overflow: hidden;
-  }
-  .cta-final-box::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 10%; right: 10%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--green), transparent);
-  }
-  .spots-left {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--red-dim);
-    border: 1px solid rgba(229,62,62,0.3);
-    color: var(--red);
-    font-size: 0.75rem;
-    padding: 5px 12px;
-    border-radius: 20px;
-    margin-bottom: 20px;
-    animation: pulse-red 2s infinite;
-  }
-
-  /* ─── FORM ─── */
-  .lead-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 24px;
-  }
-  .form-input {
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    padding: 14px 16px;
-    border-radius: 12px;
-    outline: none;
-    transition: border-color 0.2s;
-    width: 100%;
-  }
-  .form-input::placeholder { color: var(--muted); }
-  .form-input:focus { border-color: var(--green); }
-  .form-note {
-    font-size: 0.72rem;
-    color: var(--muted);
-    text-align: center;
-    line-height: 1.5;
-  }
-  .form-note strong { color: var(--text); }
-
-  /* ─── SUCCESS STATE ─── */
-  .form-success {
-    display: none;
-    padding: 24px;
-    background: rgba(37,211,102,0.08);
-    border: 1px solid rgba(37,211,102,0.3);
-    border-radius: 14px;
-    text-align: center;
-  }
-  .form-success .check { font-size: 2rem; margin-bottom: 8px; }
-  .form-success h3 {
-    font-family: var(--font-display);
-    color: var(--green);
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-  }
-  .form-success p { font-size: 0.85rem; color: var(--muted); }
-
-  /* ─── FOOTER ─── */
-  footer {
-    padding: 30px 20px;
-    text-align: center;
-    border-top: 1px solid var(--border);
-    font-size: 0.75rem;
-    color: var(--muted);
-  }
-
-  /* ─── STICKY CTA (mobile) ─── */
-  .sticky-cta {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 98;
-    padding: 12px 20px;
-    background: rgba(5,10,6,0.92);
-    backdrop-filter: blur(12px);
-    border-top: 1px solid var(--border);
-    display: flex;
-    justify-content: center;
-    transform: translateY(100%);
-    transition: transform 0.4s ease;
-  }
-  .sticky-cta.visible { transform: translateY(0); }
-  .sticky-cta .btn-primary { width: 100%; max-width: 400px; text-align: center; }
-
-  /* ─── CHAT MODAL ─── */
-  .chat-fab {
-    position: fixed;
-    bottom: 80px; right: 20px;
-    z-index: 200;
-    width: 54px; height: 54px;
-    background: var(--green);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 0 24px var(--green-glow), 0 4px 16px rgba(0,0,0,0.4);
-    border: none;
-    transition: transform 0.2s;
-    font-size: 1.3rem;
-  }
-  .chat-fab:hover { transform: scale(1.08); }
-  .chat-fab-badge {
-    position: absolute;
-    top: -4px; right: -4px;
-    width: 18px; height: 18px;
-    background: var(--red);
-    border-radius: 50%;
-    font-size: 0.6rem;
-    color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-weight: 700;
-    border: 2px solid var(--bg);
-  }
-
-  .chat-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 300;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(4px);
-  }
-  .chat-overlay.open { opacity: 1; pointer-events: all; }
-
-  .chat-modal {
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    z-index: 400;
-    background: #0d1a0f;
-    border-radius: 24px 24px 0 0;
-    border: 1px solid rgba(37,211,102,0.2);
-    border-bottom: none;
-    max-width: 480px;
-    margin: 0 auto;
-    transform: translateY(100%);
-    transition: transform 0.4s cubic-bezier(0.32, 0.72, 0, 1);
-    display: flex;
-    flex-direction: column;
-    max-height: 85vh;
-  }
-  .chat-modal.open { transform: translateY(0); }
-
-  .cm-header {
-    padding: 16px 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-  .cm-avatar {
-    width: 40px; height: 40px;
-    background: linear-gradient(135deg, var(--green), #1a9e4a);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-size: 0.85rem;
-    color: #000;
-    flex-shrink: 0;
-  }
-  .cm-info { flex: 1; }
-  .cm-name { font-weight: 700; font-size: 0.95rem; color: #fff; }
-  .cm-status { font-size: 0.72rem; color: var(--green); }
-  .cm-close {
-    background: none; border: none; color: var(--muted);
-    font-size: 1.2rem; cursor: pointer; padding: 4px;
-    line-height: 1;
-  }
-  .cm-close:hover { color: #fff; }
-
-  .cm-messages {
-    flex: 1;
-    overflow-y: auto;
-    padding: 16px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  .cm-msg {
-    max-width: 82%;
-    padding: 10px 14px;
-    border-radius: 14px;
-    font-size: 0.85rem;
-    line-height: 1.45;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.3s, transform 0.3s;
-  }
-  .cm-msg.show { opacity: 1; transform: translateY(0); }
-  .cm-msg.kai {
-    align-self: flex-start;
-    background: #1a2e1c;
-    color: var(--text);
-    border-bottom-left-radius: 4px;
-    border: 1px solid rgba(37,211,102,0.1);
-  }
-  .cm-msg.user {
-    align-self: flex-end;
-    background: rgba(37,211,102,0.15);
-    color: #c8f0d0;
-    border-bottom-right-radius: 4px;
-  }
-  .cm-typing-indicator {
-    align-self: flex-start;
-    background: #1a2e1c;
-    border: 1px solid rgba(37,211,102,0.1);
-    padding: 10px 14px;
-    border-radius: 14px;
-    border-bottom-left-radius: 4px;
-    opacity: 0;
-    transition: opacity 0.3s;
-    display: flex; gap: 4px; align-items: center;
-  }
-  .cm-typing-indicator.show { opacity: 1; }
-  .cm-typing-indicator span {
-    width: 5px; height: 5px;
-    background: var(--green);
-    border-radius: 50%;
-    animation: typing-dot 1.2s infinite;
-  }
-  .cm-typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .cm-typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-  .cm-quick-replies {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    padding: 0 14px 10px;
-  }
-  .qr-btn {
-    background: rgba(37,211,102,0.08);
-    border: 1px solid rgba(37,211,102,0.2);
-    color: var(--green);
-    font-size: 0.78rem;
-    padding: 6px 12px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-family: var(--font-body);
-    transition: background 0.2s;
-  }
-  .qr-btn:hover { background: rgba(37,211,102,0.18); }
-
-  .cm-input-row {
-    padding: 12px 14px 20px;
-    border-top: 1px solid rgba(255,255,255,0.05);
-    display: flex;
-    gap: 8px;
-  }
-  .cm-input {
-    flex: 1;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.88rem;
-    padding: 10px 14px;
-    border-radius: 20px;
-    outline: none;
-  }
-  .cm-input:focus { border-color: var(--green); }
-  .cm-send {
-    width: 40px; height: 40px;
-    background: var(--green);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem;
-    color: #000;
-    flex-shrink: 0;
-    transition: transform 0.15s;
-  }
-  .cm-send:hover { transform: scale(1.05); }
-
-  /* ─── ANIMATIONS ─── */
-  .fade-up {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.6s, transform 0.6s;
-  }
-  .fade-up.visible { opacity: 1; transform: translateY(0); }
-
-  /* ─── MOBILE BASE ─── */
-  html, body { max-width: 100%; overflow-x: hidden; }
-
-  .hero-eyebrow {
-    white-space: normal;
-    word-break: break-word;
-    max-width: 90vw;
-  }
-
-  .btn-primary {
-    word-break: keep-all;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  #vs-api .container > div[style*="grid"] {
-    padding: 0;
-  }
-
-  .noneed-item, .pf-item {
-    word-break: break-word;
-  }
-
-  @media (max-width: 400px) {
-    .hero-headline { font-size: 2rem; letter-spacing: -1px; }
-    .hero-subline { font-size: 1rem; }
-    .wapp-phone { max-width: 100%; }
-    .btn-primary { font-size: 0.9rem; padding: 14px 20px; }
-    .sec-title { font-size: 1.5rem; }
-    .step { padding: 16px 14px; }
-    .product-card { padding: 24px 16px; }
-    .scarcity-box { padding: 24px 16px; }
-    .cta-final-box { padding: 28px 16px; }
-    .proof-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  }
-
-  @media (min-width: 600px) {
-    .sticky-cta { bottom: 0; }
-    .chat-modal { left: auto; right: 20px; bottom: 20px; border-radius: 20px; border: 1px solid rgba(37,211,102,0.2); width: 380px; max-height: 600px; transform: scale(0.95) translateY(10px); opacity: 0; transition: transform 0.3s, opacity 0.3s; }
-    .chat-modal.open { transform: scale(1) translateY(0); opacity: 1; }
-    .chat-fab { bottom: 30px; right: 30px; }
-  }
-</style>
-</head>
-<body>
-
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">Kairós<span> Core</span></div>
-  <div class="nav-badge">🔴 Cupo limitado</div>
-</nav>
-
-<!-- HERO -->
-<section id="hero">
-  <div class="container" style="text-align:center;">
-    <div class="hero-eyebrow">Sin API · Sin empresa · Sin técnicos</div>
-    <h1 class="hero-headline">
-      Tu WhatsApp vende solo.<br>
-      <span class="green">Sin API. Sin complicaciones.</span>
-    </h1>
-    <p class="hero-subline">Corre desde tu celular Android. <strong><span id="typing-word"></span></strong> automático.</p>
-    <p class="hero-sub">
-      Kairós Core automatiza respuestas, califica clientes y cierra pedidos — desde tu propio WhatsApp. Sin la nube. Sin aprobaciones.
-    </p>
-    <div class="hero-bullets">
-      <div class="hero-bullet">Activación guiada en minutos</div>
-      <div class="hero-bullet">Solo necesitas un Android</div>
-      <div class="hero-bullet">El agente vende — tú cobras</div>
-    </div>
-    <a href="#form" class="btn-primary">Activar mi WhatsApp automático →</a>
-  </div>
-</section>
-
-<!-- TICKER -->
-<div class="ticker-bar">
-  <div class="ticker-inner" id="ticker">
-    <div class="ticker-item"><span class="dot"></span> <strong>+3 pedidos</strong> confirmados en los últimos 10 min</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Lupita M.</strong> cerró $890 — sin API, sin empresa</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>87 usuarios</strong> con Kairós Core activo ahora mismo</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Jorge R.</strong> su primer pedido en 40 min desde Android</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>+$4,200</strong> generados hoy en la red</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Ana T.</strong> activó Kairós Flow y triplicó su volumen</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>+3 pedidos</strong> confirmados en los últimos 10 min</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Lupita M.</strong> cerró $890 — sin API, sin empresa</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>87 usuarios</strong> con Kairós Core activo ahora mismo</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Jorge R.</strong> su primer pedido en 40 min desde Android</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>+$4,200</strong> generados hoy en la red</div>
-    <div class="ticker-item"><span class="dot"></span> <strong>Ana T.</strong> activó Kairós Flow y triplicó su volumen</div>
-  </div>
-</div>
-
-<!-- DEMO -->
-<section id="demo">
-  <div class="container">
-    <div class="sec-label">🎬 Esto pasa en tu WhatsApp — sin que lo toques</div>
-    <h2 class="sec-title">El agente atiende, califica<br>y cierra. Tú no haces nada.</h2>
-    <p class="sec-sub">De la primera pregunta al pedido confirmado. Automático. Desde tu número.</p>
-    <div class="wapp-phone fade-up">
-      <div class="wapp-header">
-        <div class="wapp-avatar">K</div>
-        <div>
-          <div class="wapp-name">Kairós Core</div>
-          <div class="wapp-status">● Activo ahora</div>
-        </div>
-      </div>
-      <div class="wapp-body" id="demo-body">
-        <!-- messages injected by JS -->
-      </div>
-    </div>
-    <button class="demo-restart" onclick="restartDemo()">↻ Ver de nuevo</button>
-  </div>
-</section>
-
-<!-- VS API COMPARISON -->
-<section id="vs-api" style="padding:70px 0; text-align:center;">
-  <div class="container">
-    <div class="sec-label">La pregunta que todos hacen</div>
-    <h2 class="sec-title">¿Por qué no usar<br><span style="color:var(--green)">WhatsApp API?</span></h2>
-    <p class="sec-sub" style="margin-bottom:28px;">Buena pregunta. Aquí está la diferencia real.</p>
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; max-width:500px; margin:0 auto;">
-      <div class="product-card fade-up" style="padding:20px 14px; border-color:rgba(229,62,62,0.25); background:rgba(229,62,62,0.03);">
-        <p style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--red); margin-bottom:14px; font-weight:600;">❌ API oficial</p>
-        <div style="display:flex; flex-direction:column; gap:8px; text-align:left;">
-          <div class="noneed-item" style="padding:7px 10px; font-size:0.78rem;"><span class="noneed-x">✗</span> Empresa verificada</div>
-          <div class="noneed-item" style="padding:7px 10px; font-size:0.78rem;"><span class="noneed-x">✗</span> Integración técnica</div>
-          <div class="noneed-item" style="padding:7px 10px; font-size:0.78rem;"><span class="noneed-x">✗</span> Aprobación de Meta</div>
-          <div class="noneed-item" style="padding:7px 10px; font-size:0.78rem;"><span class="noneed-x">✗</span> Costos mensuales</div>
-          <div class="noneed-item" style="padding:7px 10px; font-size:0.78rem;"><span class="noneed-x">✗</span> Semanas de espera</div>
-        </div>
-      </div>
-      <div class="product-card fade-up" style="padding:20px 14px; border-color:rgba(37,211,102,0.35); background:rgba(37,211,102,0.04);">
-        <p style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--green); margin-bottom:14px; font-weight:600;">✅ Kairós Core</p>
-        <div style="display:flex; flex-direction:column; gap:8px; text-align:left;">
-          <div class="pf-item" style="padding:7px 10px; font-size:0.78rem;"><span class="pf-icon">✓</span> Solo tu Android</div>
-          <div class="pf-item" style="padding:7px 10px; font-size:0.78rem;"><span class="pf-icon">✓</span> Instalación guiada</div>
-          <div class="pf-item" style="padding:7px 10px; font-size:0.78rem;"><span class="pf-icon">✓</span> Sin aprobaciones</div>
-          <div class="pf-item" style="padding:7px 10px; font-size:0.78rem;"><span class="pf-icon">✓</span> Sin costo extra</div>
-          <div class="pf-item" style="padding:7px 10px; font-size:0.78rem;"><span class="pf-icon">✓</span> Activo hoy mismo</div>
-        </div>
-      </div>
-    </div>
-    <p style="font-size:0.82rem; color:var(--muted); margin-top:22px; max-width:360px; margin-left:auto; margin-right:auto; line-height:1.6;">No corre en la nube. No en servidores de terceros.<br>Corre desde tu propio WhatsApp. Tú tienes el control.</p>
-    <a href="#form" class="btn-primary" style="display:inline-block; margin-top:24px;">Empezar sin API →</a>
-  </div>
-</section>
-
-<!-- PRODUCT -->
-<section id="product">
-  <div class="container">
-    <div class="sec-label">Qué es exactamente</div>
-    <h2 class="sec-title" style="margin-bottom:30px;">Un agente que vive<br><span style="color:var(--green)">en tu WhatsApp</span></h2>
-    <div class="product-card fade-up">
-      <div class="product-icon">⚡</div>
-      <div class="product-name">Kairós <span class="green">Core</span></div>
-      <p class="product-desc">No es un bot en la nube. Corre desde tu celular Android, en tu número real de WhatsApp. Sin empresa. Sin API. Sin configuraciones técnicas.</p>
-      <div class="product-features">
-        <div class="pf-item"><span class="pf-icon">📱</span> Funciona desde tu Android con instalación guiada.</div>
-        <div class="pf-item"><span class="pf-icon">💬</span> Responde mensajes en segundos. Sin que toques nada.</div>
-        <div class="pf-item"><span class="pf-icon">🎯</span> Filtra curiosos. Solo avanza con los que compran.</div>
-        <div class="pf-item"><span class="pf-icon">📦</span> Confirma pedidos automáticamente, 24/7.</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- HOW IT WORKS -->
-<section id="how">
-  <div class="container">
-    <div class="sec-label">Proceso</div>
-    <h2 class="sec-title">De cero a tu primer pedido<br>en 3 pasos.</h2>
-    <p class="sec-sub">Sin saber de tecnología. Sin API. Sin complicaciones.</p>
-    <div class="steps">
-      <div class="step fade-up">
-        <div class="step-num">01</div>
-        <div class="step-content">
-          <div class="step-title">Instalas Kairós Core en tu Android</div>
-          <div class="step-desc">Instalación 100% guiada. No necesitas saber nada técnico. Solo seguir los pasos — en minutos está listo.</div>
-        </div>
-        <span class="step-arrow">→</span>
-      </div>
-      <div class="step fade-up">
-        <div class="step-num">02</div>
-        <div class="step-content">
-          <div class="step-title">Mandas tráfico a tu WhatsApp</div>
-          <div class="step-desc">Personas interesadas llegan a tu número. Te damos guías simples para lograrlo desde el día uno.</div>
-        </div>
-        <span class="step-arrow">→</span>
-      </div>
-      <div class="step fade-up">
-        <div class="step-num">03</div>
-        <div class="step-content">
-          <div class="step-title">El agente vende. Tú cobras.</div>
-          <div class="step-desc">Kairós Core atiende, califica y confirma pedidos en tu nombre. Sin que lo toques.</div>
-        </div>
-        <span class="step-arrow">✓</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- SCARCITY -->
-<section id="scarcity">
-  <div class="container">
-    <div class="scarcity-box fade-up">
-      <div class="scarcity-icon">⚠️</div>
-      <div class="scarcity-title">El agente tiene capacidad limitada.<br>No aceptamos a todos.</div>
-      <p class="scarcity-text">Cada acceso impacta directamente el volumen del sistema. Por eso controlamos quién entra — y se elimina quien no genera tráfico activo.</p>
-      <div class="scarcity-rules">
-        <div class="sr-item"><span class="sr-icon">✗</span> Sin tráfico activo = acceso revocado en 72h</div>
-        <div class="sr-item"><span class="sr-icon">✗</span> Revisión manual. No hay acceso automático.</div>
-        <div class="sr-item"><span class="sr-icon">✗</span> Cupo real. Cuando se llena, se cierra.</div>
-      </div>
-      <a href="#form" class="btn-primary" style="width:100%;display:block;text-align:center;">Activar acceso ahora →</a>
-    </div>
-  </div>
-</section>
-
-<!-- PROOF -->
-<section id="proof">
-  <div class="container">
-    <div class="sec-label">Actividad ahora mismo</div>
-    <h2 class="sec-title">Kairós Core está corriendo.</h2>
-    <p class="sec-sub">Esto es lo que genera la red hoy.</p>
-    <div class="proof-grid fade-up">
-      <div class="proof-stat">
-        <div class="num" id="stat-pedidos">0</div>
-        <div class="label">Pedidos hoy</div>
-      </div>
-      <div class="proof-stat">
-        <div class="num" id="stat-usuarios">0</div>
-        <div class="label">Usuarios activos</div>
-      </div>
-      <div class="proof-stat">
-        <div class="num" id="stat-tiempo">0s</div>
-        <div class="label">Tiempo de respuesta</div>
-      </div>
-      <div class="proof-stat">
-        <div class="num" id="stat-conv">0%</div>
-        <div class="label">Tasa de cierre</div>
-      </div>
-    </div>
-    <div class="live-feed" id="live-feed"></div>
-  </div>
-</section>
-
-<!-- NO NECESITAS -->
-<section id="noneed">
-  <div class="container">
-    <div class="sec-label">Sin requisitos</div>
-    <h2 class="sec-title">Lo único que necesitas<br>es un Android.</h2>
-    <p class="sec-sub">Todo lo demás ya está resuelto en el sistema.</p>
-    <div class="noneed-grid">
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> WhatsApp API o Business</div>
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> Empresa verificada</div>
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> Conocimientos técnicos</div>
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> Inventario o logística</div>
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> Experiencia en ventas</div>
-      <div class="noneed-item fade-up"><span class="noneed-x">✗</span> Atender clientes tú</div>
-    </div>
-  </div>
-</section>
-
-<!-- FLOW -->
-<section id="flow" style="text-align:center; padding:50px 0 40px;">
-  <div class="container">
-    <div class="flow-pill fade-up">
-      <span class="icon">⚡</span>
-      <span>¿Quieres volumen sin esfuerzo manual? <strong>Kairós Flow</strong> automatiza el tráfico. Se activa una vez que tienes resultados con Core.</span>
-    </div>
-  </div>
-</section>
-
-<!-- CTA FINAL + FORM -->
-<section id="cta-final">
-  <div class="container">
-    <div class="cta-final-box" id="form">
-      <div class="spots-left">🔴 Cupos disponibles: <strong id="spots-num">7</strong></div>
-      <div class="sec-label">Solicitar acceso</div>
-      <h2 class="sec-title" style="font-size:1.6rem; margin-bottom:8px;">Sin API. Sin empresa.<br>Solo tu Android y tus ganas.</h2>
-      <p style="font-size:0.88rem; color:var(--muted); margin-bottom:4px;">Revisamos cada solicitud. Solo entra quien va a usarlo.</p>
-
-      <div class="lead-form" id="lead-form">
-        <input type="text" class="form-input" id="inp-name" placeholder="Tu nombre" autocomplete="off">
-        <input type="tel" class="form-input" id="inp-wa" placeholder="Tu número de WhatsApp" autocomplete="off">
-        <button class="btn-primary" onclick="submitForm()" style="border:none;width:100%;font-size:1rem;text-align:center;">
-          Quiero automatizar ahora →
-        </button>
-        <p class="form-note"><strong>Revisión manual en menos de 24h.</strong> Solo 2 campos. Sin spam.</p>
-      </div>
-
-      <div class="form-success" id="form-success">
-        <div class="check">✅</div>
-        <h3>Solicitud recibida.</h3>
-        <p>Revisamos tu acceso en las próximas 24h. Mantén WhatsApp activo — te contactamos directo.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <p>Kairós Core © 2025 · Automatización de ventas por WhatsApp · Sin API · Sin empresa requerida</p>
-</footer>
-
-<!-- STICKY CTA -->
-<div class="sticky-cta" id="sticky-cta">
-  <a href="#form" class="btn-primary">Activar mi WhatsApp automático →</a>
-</div>
-
-<!-- CHAT FAB -->
-<button class="chat-fab" onclick="toggleChat()" id="chat-fab" aria-label="Hablar con KAI">
-  💬
-  <div class="chat-fab-badge">1</div>
-</button>
-
-<!-- CHAT OVERLAY -->
-<div class="chat-overlay" id="chat-overlay" onclick="toggleChat()"></div>
-
-<!-- CHAT MODAL -->
-<div class="chat-modal" id="chat-modal">
-  <div class="cm-header">
-    <div class="cm-avatar">KAI</div>
-    <div class="cm-info">
-      <div class="cm-name">KAI · Asistente</div>
-      <div class="cm-status">● En línea ahora</div>
-    </div>
-    <button class="cm-close" onclick="toggleChat()">✕</button>
-  </div>
-  <div class="cm-messages" id="cm-messages">
-    <div class="cm-typing-indicator" id="cm-typing">
-      <span></span><span></span><span></span>
-    </div>
-  </div>
-  <div class="cm-quick-replies" id="cm-quick-replies"></div>
-  <div class="cm-input-row">
-    <input type="text" class="cm-input" id="cm-input" placeholder="Escribe aquí..." onkeydown="handleChatKey(event)">
-    <button class="cm-send" onclick="sendChatMsg()">➤</button>
-  </div>
-</div>
-
-<script>
-// ── TYPING HERO ──
-const words = ['vende','responde','cobra','califica','cierra'];
-let wi = 0, ci = 0, deleting = false;
-const el = document.getElementById('typing-word');
-function typeLoop() {
-  const word = words[wi];
-  if (!deleting) {
-    el.textContent = word.slice(0, ++ci);
-    if (ci === word.length) { deleting = true; setTimeout(typeLoop, 1800); return; }
-  } else {
-    el.textContent = word.slice(0, --ci);
-    if (ci === 0) { deleting = false; wi = (wi + 1) % words.length; }
-  }
-  setTimeout(typeLoop, deleting ? 60 : 110);
-}
-typeLoop();
-
-// ── WHATSAPP DEMO ──
-const demoMessages = [
-  { type: 'client', text: 'Hola, tienen crema para cabello rizado? cuánto?', delay: 400 },
-  { type: 'bot', text: '¡Hola! 👋 Sí tenemos. 3 opciones:\n\n• 150ml → $180\n• 300ml → $290 ⭐ más vendida\n• 500ml → $420\n\n¿Cuál te llevo?', delay: 1400 },
-  { type: 'client', text: 'la de 300, cómo pago?', delay: 2600 },
-  { type: 'bot', text: '✅ $290 con envío gratis a domicilio.\n\n¿A qué dirección te la mandamos?', delay: 3600 },
-  { type: 'client', text: 'Insurgentes 340, CDMX', delay: 4700 },
-  { type: 'bot', text: '📦 Resumen de tu pedido:\n\nCrema 300ml — $290\n🚚 Insurgentes 340, CDMX\n\nResponde SÍ para confirmar.', delay: 5700 },
-  { type: 'client', text: 'SÍ', delay: 6700 },
-  { type: 'confirm', text: '✅ PEDIDO CONFIRMADO\n\n#PED-8847 · $290\nEnvío en 24-48hrs\n\n— Kairós Core cerró esta venta.\n   Tú no hiciste nada. 💰', delay: 7600 },
-];
-
-let demoTimer = null;
-function restartDemo() {
-  if (demoTimer) clearTimeout(demoTimer);
-  document.getElementById('demo-body').innerHTML = '';
-  startDemo();
+body {
+background: var(--bg);
+color: var(--text);
+font-family: var(--font-body);
+font-size: 16px;
+line-height: 1.6;
+overflow-x: hidden;
 }
 
-function startDemo() {
-  const body = document.getElementById('demo-body');
-  demoMessages.forEach((m, i) => {
-    demoTimer = setTimeout(() => {
-      const typing = document.createElement('div');
-      typing.className = 'wapp-typing';
-      body.appendChild(typing);
-      setTimeout(() => typing.classList.add('show'), 10);
-      setTimeout(() => {
-        typing.remove();
-        const msg = document.createElement('div');
-        msg.className = `wapp-msg ${m.type}`;
-        msg.style.whiteSpace = 'pre-wrap';
-        msg.textContent = m.text;
-        body.appendChild(msg);
-        const tag = document.createElement('div');
-        tag.className = `wapp-tag ${m.type === 'client' ? 'left' : ''}`;
-        tag.textContent = m.type === 'bot' || m.type === 'confirm' ? 'Kairós Core' : 'Cliente';
-        body.appendChild(tag);
-        setTimeout(() => msg.classList.add('show'), 10);
-        body.scrollTop = body.scrollHeight;
-      }, 700);
-    }, m.delay);
-  });
-}
-startDemo();
-
-// ── SCROLL ANIMATIONS ──
-const fadeEls = document.querySelectorAll('.fade-up');
-const io = new IntersectionObserver(entries => {
-  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
-}, { threshold: 0.12 });
-fadeEls.forEach(el => io.observe(el));
-
-// ── STICKY CTA ──
-const stickyCta = document.getElementById('sticky-cta');
-window.addEventListener('scroll', () => {
-  stickyCta.classList.toggle('visible', window.scrollY > 400);
-});
-
-// ── ANIMATED STATS ──
-function animCount(id, target, suffix = '', duration = 1800) {
-  const el = document.getElementById(id);
-  const start = Date.now();
-  const tick = () => {
-    const p = Math.min((Date.now() - start) / duration, 1);
-    const val = Math.floor(p * target);
-    el.textContent = val + suffix;
-    if (p < 1) requestAnimationFrame(tick);
-  };
-  requestAnimationFrame(tick);
-}
-const statsIo = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      animCount('stat-pedidos', 143);
-      animCount('stat-usuarios', 87);
-      animCount('stat-tiempo', 4, 's');
-      animCount('stat-conv', 68, '%');
-      statsIo.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.3 });
-statsIo.observe(document.getElementById('proof'));
-
-// ── LIVE FEED ──
-const feedItems = [
-  { text: 'Carlos G. — pedido cerrado $320 sin intervenir', time: 'hace 2 min' },
-  { text: 'Mariana L. — 3 clientes calificados, 2 convertidos', time: 'hace 6 min' },
-  { text: 'Pedro A. — $890 generados, estaba durmiendo', time: 'hace 11 min' },
-  { text: 'Red Kairós — 12 pedidos confirmados este turno', time: 'hace 15 min' },
-  { text: 'Sofía R. — activó hoy, primer pedido en 40 min', time: 'hace 22 min' },
-];
-const feed = document.getElementById('live-feed');
-feedItems.forEach((item, i) => {
-  const div = document.createElement('div');
-  div.className = 'lf-item';
-  div.innerHTML = `<span class="lf-dot"></span><span class="lf-text">${item.text}</span><span class="lf-time">${item.time}</span>`;
-  feed.appendChild(div);
-  setTimeout(() => div.classList.add('show'), i * 350 + 400);
-});
-
-// ── SPOTS COUNTER ──
-let spots = 7;
-setInterval(() => {
-  if (spots > 3 && Math.random() > 0.7) {
-    spots--;
-    document.getElementById('spots-num').textContent = spots;
-  }
-}, 18000);
-
-// ── FORM SUBMIT ──
-function submitForm() {
-  const name = document.getElementById('inp-name').value.trim();
-  const wa = document.getElementById('inp-wa').value.trim();
-  if (!name || !wa) { alert('Por favor completa nombre y WhatsApp.'); return; }
-  document.getElementById('lead-form').style.display = 'none';
-  document.getElementById('form-success').style.display = 'block';
-  if (spots > 1) { spots--; document.getElementById('spots-num').textContent = spots; }
+/* ─── NOISE OVERLAY ─── */
+body::before {
+content: '';
+position: fixed;
+inset: 0;
+background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+pointer-events: none;
+z-index: 0;
+opacity: 0.4;
 }
 
-// ── CHAT MODAL ──
-let chatOpen = false;
-let chatStarted = false;
+section { position: relative; z-index: 1; }
 
-function toggleChat() {
-  chatOpen = !chatOpen;
-  document.getElementById('chat-modal').classList.toggle('open', chatOpen);
-  document.getElementById('chat-overlay').classList.toggle('open', chatOpen);
-  document.querySelector('.chat-fab-badge').style.display = 'none';
-  if (chatOpen && !chatStarted) { chatStarted = true; startKaiChat(); }
+.container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+/* ─── NAVBAR ─── */
+nav {
+position: fixed;
+top: 0; left: 0; right: 0;
+z-index: 100;
+padding: 14px 20px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: rgba(5,10,6,0.85);
+backdrop-filter: blur(12px);
+border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+font-family: var(--font-display);
+font-weight: 800;
+font-size: 1.1rem;
+color: var(--green);
+letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--text); }
+.nav-badge {
+font-size: 0.7rem;
+background: var(--red-dim);
+border: 1px solid var(--red);
+color: var(--red);
+padding: 3px 10px;
+border-radius: 20px;
+letter-spacing: 0.5px;
+text-transform: uppercase;
+font-weight: 500;
+animation: pulse-red 2s infinite;
+}
+@keyframes pulse-red {
+0%,100% { opacity: 1; }
+50% { opacity: 0.6; }
 }
 
-const kaiFlow = [
-  { from: 'kai', text: 'Hola 👋 Soy KAI.\n\n¿Tienes dudas sobre cómo funciona Kairós Core?\nPregunta lo que quieras.', delay: 900 },
-];
+/* ─── HERO ─── */
+#hero {
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+justify-content: center;
+padding: 100px 20px 60px;
+text-align: center;
+background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(37,211,102,0.07) 0%, transparent 70%);
+}
+.hero-eyebrow {
+display: inline-block;
+font-size: 0.72rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+color: var(--green);
+background: rgba(37,211,102,0.08);
+border: 1px solid var(--border);
+padding: 5px 14px;
+border-radius: 20px;
+margin-bottom: 24px;
+}
+.hero-headline {
+font-family: var(--font-display);
+font-size: clamp(2.4rem, 10vw, 4rem);
+font-weight: 800;
+line-height: 1.05;
+letter-spacing: -1.5px;
+color: #fff;
+margin-bottom: 18px;
+}
+.hero-headline .green { color: var(--green); }
+.hero-subline {
+font-size: 1.25rem;
+color: var(--muted);
+margin-bottom: 8px;
+font-weight: 300;
+}
+.hero-subline strong { color: var(--text); font-weight: 500; }
+#typing-word {
+color: var(--green);
+font-weight: 600;
+border-right: 2px solid var(--green);
+padding-right: 2px;
+animation: blink 0.8s step-end infinite;
+min-width: 80px;
+display: inline-block;
+}
+@keyframes blink { 50% { border-color: transparent; } }
 
-const kaiResponses = {
-  'cómo funciona': 'Simple: instalas Kairós Core en tu Android y lo conectas a tu WhatsApp. El agente responde, califica clientes y cierra pedidos automáticamente. Tú solo mandas tráfico. 💰',
-  'cuánto cuesta': 'El acceso no tiene costo fijo publicado. Se revisa manualmente y si calificas, el equipo te confirma todo. Sin cobros escondidos.',
-  'es real': 'Sí. Kairós Core está activo ahora mismo en la red. Los datos del ticker y el feed reflejan operaciones reales. Lo compruebas tú mismo cuando lo tienes. 📊',
-  'cómo empiezo': 'Llena el formulario con tu nombre y WhatsApp. En menos de 24h te contactamos si calificas. La instalación es guiada — no necesitas saber nada técnico. ✅',
-  'api': 'No necesitas ninguna API. Kairós Core no usa WhatsApp API ni requiere empresa verificada. Corre directamente desde tu celular Android con tu número normal.',
-  'android': 'Sí, solo necesitas un Android con WhatsApp instalado. La configuración es guiada — te tomará minutos, no horas.',
-  'iphone': 'Por ahora Kairós Core funciona en Android. Si tienes un Android disponible, aunque no sea tu principal, puede funcionar desde él.',
-  'default': 'Lo mejor que puedes hacer es solicitarlo y verlo tú mismo. El agente habla solo cuando lo tienes activo. ¿Te animas?',
-};
-
-const quickReplies = ['¿Cómo funciona?', '¿Necesito API?', '¿Solo Android?', '¿Cómo empiezo?'];
-
-function startKaiChat() {
-  const msgs = document.getElementById('cm-messages');
-  const typing = document.getElementById('cm-typing');
-  typing.classList.add('show');
-  setTimeout(() => {
-    typing.classList.remove('show');
-    addKaiMsg(kaiFlow[0].text);
-    setTimeout(() => {
-      const qr = document.getElementById('cm-quick-replies');
-      quickReplies.forEach(q => {
-        const btn = document.createElement('button');
-        btn.className = 'qr-btn';
-        btn.textContent = q;
-        btn.onclick = () => { handleQuickReply(q); qr.innerHTML = ''; };
-        qr.appendChild(btn);
-      });
-    }, 400);
-  }, kaiFlow[0].delay);
+.hero-sub {
+font-size: 0.95rem;
+color: var(--muted);
+max-width: 380px;
+margin: 12px auto 28px;
+line-height: 1.6;
+}
+.hero-bullets {
+display: flex;
+flex-direction: column;
+gap: 8px;
+align-items: center;
+margin-bottom: 32px;
+}
+.hero-bullet {
+display: flex;
+align-items: center;
+gap: 8px;
+font-size: 0.9rem;
+color: var(--text);
+}
+.hero-bullet::before {
+content: '✓';
+width: 20px; height: 20px;
+background: rgba(37,211,102,0.15);
+border: 1px solid var(--green);
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 0.65rem;
+color: var(--green);
+flex-shrink: 0;
 }
 
-function addKaiMsg(text) {
-  const msgs = document.getElementById('cm-messages');
-  const div = document.createElement('div');
-  div.className = 'cm-msg kai';
-  div.style.whiteSpace = 'pre-wrap';
-  div.textContent = text;
-  msgs.appendChild(div);
-  setTimeout(() => div.classList.add('show'), 10);
-  msgs.scrollTop = msgs.scrollHeight;
+/* ─── BUTTONS ─── */
+.btn-primary {
+display: inline-block;
+background: var(--green);
+color: #000;
+font-family: var(--font-display);
+font-weight: 700;
+font-size: 1rem;
+padding: 16px 36px;
+border-radius: 14px;
+text-decoration: none;
+border: none;
+cursor: pointer;
+box-shadow: 0 0 32px var(--green-glow), 0 4px 16px rgba(0,0,0,0.4);
+transition: transform 0.15s, box-shadow 0.15s;
+letter-spacing: -0.3px;
+}
+.btn-primary:hover {
+transform: translateY(-2px) scale(1.02);
+box-shadow: 0 0 48px var(--green-glow), 0 8px 24px rgba(0,0,0,0.5);
+}
+.btn-primary:active { transform: scale(0.98); }
+
+/* ─── LIVE TICKER ─── */
+.ticker-bar {
+background: rgba(37,211,102,0.06);
+border-top: 1px solid var(--border);
+border-bottom: 1px solid var(--border);
+padding: 12px 0;
+overflow: hidden;
+position: relative;
+}
+.ticker-inner {
+display: flex;
+gap: 40px;
+white-space: nowrap;
+animation: ticker 22s linear infinite;
+}
+@keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.ticker-item {
+font-size: 0.78rem;
+color: var(--muted);
+display: flex;
+align-items: center;
+gap: 6px;
+flex-shrink: 0;
+}
+.ticker-item .dot {
+width: 6px; height: 6px;
+border-radius: 50%;
+background: var(--green);
+animation: pulse-dot 1.5s infinite;
+}
+@keyframes pulse-dot {
+0%,100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.7); }
+}
+.ticker-item strong { color: var(--green); }
+
+/* ─── SECTION TITLES ─── */
+.sec-label {
+font-size: 0.7rem;
+text-transform: uppercase;
+letter-spacing: 2px;
+color: var(--green);
+margin-bottom: 10px;
+}
+.sec-title {
+font-family: var(--font-display);
+font-size: clamp(1.6rem, 6vw, 2.4rem);
+font-weight: 800;
+letter-spacing: -1px;
+line-height: 1.1;
+color: #fff;
+margin-bottom: 12px;
+}
+.sec-sub {
+font-size: 0.95rem;
+color: var(--muted);
+max-width: 420px;
+margin: 0 auto 40px;
 }
 
-function addUserMsg(text) {
-  const msgs = document.getElementById('cm-messages');
-  const div = document.createElement('div');
-  div.className = 'cm-msg user show';
-  div.textContent = text;
-  msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+/* ─── DEMO WHATSAPP ─── */
+#demo {
+padding: 80px 0;
+text-align: center;
+}
+.wapp-phone {
+max-width: 340px;
+margin: 0 auto;
+background: #111b12;
+border-radius: 28px;
+overflow: hidden;
+border: 1px solid rgba(37,211,102,0.2);
+box-shadow: 0 0 60px rgba(37,211,102,0.1), 0 24px 48px rgba(0,0,0,0.6);
+}
+.wapp-header {
+background: #1f2c20;
+padding: 14px 16px;
+display: flex;
+align-items: center;
+gap: 10px;
+border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.wapp-avatar {
+width: 36px; height: 36px;
+border-radius: 50%;
+background: linear-gradient(135deg, var(--green), #1a9e4a);
+display: flex; align-items: center; justify-content: center;
+font-size: 0.75rem;
+font-weight: 700;
+color: #000;
+font-family: var(--font-display);
+}
+.wapp-name { font-size: 0.85rem; font-weight: 600; color: #fff; }
+.wapp-status { font-size: 0.7rem; color: var(--green); }
+.wapp-body {
+padding: 14px 12px;
+min-height: 380px;
+display: flex;
+flex-direction: column;
+gap: 8px;
+overflow: hidden;
+}
+.wapp-msg {
+max-width: 78%;
+padding: 9px 12px;
+border-radius: 12px;
+font-size: 0.82rem;
+line-height: 1.45;
+opacity: 0;
+transform: translateY(10px);
+transition: opacity 0.35s, transform 0.35s;
+}
+.wapp-msg.show { opacity: 1; transform: translateY(0); }
+.wapp-msg.client {
+align-self: flex-start;
+background: #2a2f2a;
+color: #ddd;
+border-bottom-left-radius: 3px;
+}
+.wapp-msg.bot {
+align-self: flex-end;
+background: #1f3320;
+color: #c8f0d0;
+border-bottom-right-radius: 3px;
+border: 1px solid rgba(37,211,102,0.15);
+}
+.wapp-msg.confirm {
+align-self: flex-end;
+background: linear-gradient(135deg, #1a4a24, #0d2e14);
+border: 1px solid var(--green);
+color: var(--green);
+font-weight: 600;
+font-size: 0.8rem;
+max-width: 88%;
+border-radius: 12px;
+border-bottom-right-radius: 3px;
+text-align: right;
+}
+.wapp-typing {
+align-self: flex-end;
+background: #1f3320;
+padding: 10px 14px;
+border-radius: 12px;
+border-bottom-right-radius: 3px;
+opacity: 0;
+transition: opacity 0.3s;
+display: flex; gap: 4px; align-items: center;
+}
+.wapp-typing.show { opacity: 1; }
+.wapp-typing span {
+width: 6px; height: 6px;
+background: var(--green);
+border-radius: 50%;
+animation: typing-dot 1.2s infinite;
+}
+.wapp-typing span:nth-child(2) { animation-delay: 0.2s; }
+.wapp-typing span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing-dot {
+0%,80%,100% { transform: scale(0.7); opacity: 0.4; }
+40% { transform: scale(1); opacity: 1; }
+}
+.wapp-tag {
+font-size: 0.65rem;
+color: var(--muted);
+margin-top: 2px;
+text-align: right;
+}
+.wapp-tag.left { text-align: left; }
+.demo-restart {
+font-size: 0.75rem;
+color: var(--muted);
+margin-top: 14px;
+cursor: pointer;
+text-decoration: underline;
+background: none;
+border: none;
+color: var(--muted);
+display: block;
+margin: 12px auto 0;
+}
+.demo-restart:hover { color: var(--green); }
+
+/* ─── PRODUCT INTRO ─── */
+#product {
+padding: 80px 0;
+text-align: center;
+background: radial-gradient(ellipse 70% 50% at 50% 100%, rgba(37,211,102,0.05) 0%, transparent 70%);
+}
+.product-card {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 20px;
+padding: 32px 24px;
+max-width: 480px;
+margin: 0 auto;
+position: relative;
+overflow: hidden;
+}
+.product-card::before {
+content: '';
+position: absolute;
+top: -1px; left: 20%; right: 20%;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+.product-icon {
+width: 56px; height: 56px;
+background: rgba(37,211,102,0.12);
+border: 1px solid rgba(37,211,102,0.3);
+border-radius: 16px;
+display: flex; align-items: center; justify-content: center;
+font-size: 1.5rem;
+margin: 0 auto 16px;
+}
+.product-name {
+font-family: var(--font-display);
+font-size: 1.5rem;
+font-weight: 800;
+color: #fff;
+letter-spacing: -0.5px;
+margin-bottom: 6px;
+}
+.product-name .green { color: var(--green); }
+.product-desc {
+font-size: 0.9rem;
+color: var(--muted);
+line-height: 1.6;
+margin-bottom: 20px;
+}
+.product-features {
+display: flex;
+flex-direction: column;
+gap: 10px;
+text-align: left;
+}
+.pf-item {
+display: flex;
+align-items: flex-start;
+gap: 10px;
+font-size: 0.88rem;
+color: var(--text);
+background: rgba(37,211,102,0.04);
+border: 1px solid rgba(37,211,102,0.08);
+padding: 10px 14px;
+border-radius: 10px;
+}
+.pf-icon { color: var(--green); font-size: 0.9rem; flex-shrink: 0; margin-top: 1px; }
+
+/* ─── HOW IT WORKS ─── */
+#how {
+padding: 80px 0;
+text-align: center;
+}
+.steps {
+display: flex;
+flex-direction: column;
+gap: 16px;
+max-width: 480px;
+margin: 0 auto;
+}
+.step {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 16px;
+padding: 22px 20px;
+display: flex;
+align-items: flex-start;
+gap: 16px;
+text-align: left;
+position: relative;
+overflow: hidden;
+transition: border-color 0.3s, background 0.3s;
+}
+.step:hover {
+border-color: rgba(37,211,102,0.3);
+background: rgba(37,211,102,0.03);
+}
+.step-num {
+font-family: var(--font-display);
+font-size: 2rem;
+font-weight: 800;
+color: rgba(37,211,102,0.15);
+line-height: 1;
+flex-shrink: 0;
+width: 36px;
+}
+.step-content {}
+.step-title {
+font-family: var(--font-display);
+font-size: 1rem;
+font-weight: 700;
+color: #fff;
+margin-bottom: 4px;
+}
+.step-desc { font-size: 0.85rem; color: var(--muted); }
+.step-arrow {
+position: absolute;
+right: 16px; top: 50%;
+transform: translateY(-50%);
+color: var(--green);
+opacity: 0.5;
+font-size: 0.9rem;
 }
 
-function getKaiResponse(input) {
-  const lower = input.toLowerCase();
-  for (const key in kaiResponses) {
-    if (key !== 'default' && lower.includes(key)) return kaiResponses[key];
-  }
-  return kaiResponses['default'];
+/* ─── SCARCITY ─── */
+#scarcity {
+padding: 70px 0;
+text-align: center;
+}
+.scarcity-box {
+background: linear-gradient(135deg, rgba(229,62,62,0.06), rgba(229,62,62,0.03));
+border: 1px solid rgba(229,62,62,0.25);
+border-radius: 20px;
+padding: 32px 24px;
+max-width: 480px;
+margin: 0 auto;
+position: relative;
+overflow: hidden;
+}
+.scarcity-box::before {
+content: '';
+position: absolute;
+top: -1px; left: 20%; right: 20%;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(--red), transparent);
+}
+.scarcity-icon { font-size: 2rem; margin-bottom: 12px; }
+.scarcity-title {
+font-family: var(--font-display);
+font-size: 1.35rem;
+font-weight: 800;
+color: #fff;
+margin-bottom: 10px;
+letter-spacing: -0.5px;
+}
+.scarcity-text { font-size: 0.9rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+.scarcity-rules {
+display: flex;
+flex-direction: column;
+gap: 8px;
+margin-bottom: 24px;
+text-align: left;
+}
+.sr-item {
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 0.85rem;
+color: var(--text);
+padding: 8px 12px;
+background: rgba(229,62,62,0.05);
+border-radius: 8px;
+}
+.sr-item .sr-icon { color: var(--red); font-size: 0.85rem; }
+
+/* ─── ACTIVITY / PROOF ─── */
+#proof {
+padding: 70px 0;
+text-align: center;
+}
+.proof-grid {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 12px;
+max-width: 400px;
+margin: 0 auto 28px;
+}
+.proof-stat {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 14px;
+padding: 18px 14px;
+}
+.proof-stat .num {
+font-family: var(--font-display);
+font-size: 1.9rem;
+font-weight: 800;
+color: var(--green);
+letter-spacing: -1px;
+line-height: 1;
+}
+.proof-stat .label { font-size: 0.73rem; color: var(--muted); margin-top: 4px; }
+.live-feed {
+max-width: 400px;
+margin: 0 auto;
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+.lf-item {
+background: var(--card);
+border: 1px solid var(--border);
+border-radius: 10px;
+padding: 10px 14px;
+display: flex;
+align-items: center;
+gap: 10px;
+font-size: 0.8rem;
+text-align: left;
+opacity: 0;
+transform: translateX(-10px);
+transition: opacity 0.4s, transform 0.4s;
+}
+.lf-item.show { opacity: 1; transform: translateX(0); }
+.lf-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); flex-shrink: 0; animation: pulse-dot 2s infinite; }
+.lf-text { color: var(--text); flex: 1; }
+.lf-time { color: var(--muted); font-size: 0.7rem; }
+
+/* ─── NO NECESITAS ─── */
+#noneed {
+padding: 70px 0;
+text-align: center;
+}
+.noneed-grid {
+display: flex;
+flex-direction: column;
+gap: 10px;
+max-width: 420px;
+margin: 0 auto;
+}
+.noneed-item {
+display: flex;
+align-items: center;
+gap: 12px;
+background: var(--card);
+border: 1px solid rgba(255,255,255,0.05);
+border-radius: 12px;
+padding: 14px 16px;
+text-align: left;
+font-size: 0.9rem;
+color: var(--text);
+}
+.noneed-x {
+width: 24px; height: 24px;
+background: rgba(229,62,62,0.12);
+border: 1px solid rgba(229,62,62,0.3);
+border-radius: 6px;
+display: flex; align-items: center; justify-content: center;
+color: var(--red);
+font-size: 0.7rem;
+font-weight: 700;
+flex-shrink: 0;
 }
 
-function sendChatMsg() {
-  const inp = document.getElementById('cm-input');
-  const text = inp.value.trim();
-  if (!text) return;
-  inp.value = '';
-  addUserMsg(text);
-  document.getElementById('cm-quick-replies').innerHTML = '';
-  const typing = document.getElementById('cm-typing');
-  const msgs = document.getElementById('cm-messages');
-  msgs.appendChild(typing);
-  typing.classList.add('show');
-  msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => {
-    typing.classList.remove('show');
-    addKaiMsg(getKaiResponse(text));
-    if (text.toLowerCase().includes('empez') || text.toLowerCase().includes('acceso') || text.toLowerCase().includes('quiero')) {
-      setTimeout(() => addKaiMsg('👇 El formulario está justo abajo. 2 campos. 30 segundos.'), 800);
-    }
-  }, 1200);
+/* ─── FLOW MENTION ─── */
+#flow {
+padding: 60px 0;
+text-align: center;
+}
+.flow-pill {
+display: inline-flex;
+align-items: center;
+gap: 10px;
+background: rgba(37,211,102,0.05);
+border: 1px solid var(--border);
+border-radius: 40px;
+padding: 14px 24px;
+font-size: 0.88rem;
+color: var(--muted);
+max-width: 400px;
+}
+.flow-pill strong { color: var(--green); }
+.flow-pill .icon { font-size: 1.1rem; }
+
+/* ─── CTA FINAL ─── */
+#cta-final {
+padding: 80px 0;
+text-align: center;
+background: radial-gradient(ellipse 80% 60% at 50% 50%, rgba(37,211,102,0.07) 0%, transparent 70%);
+}
+.cta-final-box {
+max-width: 480px;
+margin: 0 auto;
+padding: 40px 24px;
+background: var(--card);
+border: 1px solid rgba(37,211,102,0.2);
+border-radius: 24px;
+position: relative;
+overflow: hidden;
+}
+.cta-final-box::before {
+content: '';
+position: absolute;
+top: -1px; left: 10%; right: 10%;
+height: 2px;
+background: linear-gradient(90deg, transparent, var(--green), transparent);
+}
+.spots-left {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+background: var(--red-dim);
+border: 1px solid rgba(229,62,62,0.3);
+color: var(--red);
+font-size: 0.75rem;
+padding: 5px 12px;
+border-radius: 20px;
+margin-bottom: 20px;
+animation: pulse-red 2s infinite;
 }
 
-function handleQuickReply(text) {
-  addUserMsg(text);
-  const typing = document.getElementById('cm-typing');
-  const msgs = document.getElementById('cm-messages');
-  msgs.appendChild(typing);
-  typing.classList.add('show');
-  msgs.scrollTop = msgs.scrollHeight;
-  setTimeout(() => {
-    typing.classList.remove('show');
-    addKaiMsg(getKaiResponse(text));
-  }, 1100);
+/* ─── FORM ─── */
+.lead-form {
+display: flex;
+flex-direction: column;
+gap: 12px;
+margin-top: 24px;
+}
+.form-input {
+background: rgba(255,255,255,0.04);
+border: 1px solid rgba(255,255,255,0.1);
+color: var(--text);
+font-family: var(--font-body);
+font-size: 0.95rem;
+padding: 14px 16px;
+border-radius: 12px;
+outline: none;
+transition: border-color 0.2s;
+width: 100%;
+}
+.form-input::placeholder { color: var(--muted); }
+.form-input:focus { border-color: var(--green); }
+.form-note {
+font-size: 0.72rem;
+color: var(--muted);
+text-align: center;
+line-height: 1.5;
+}
+.form-note strong { color: var(--text); }
+
+/* ─── SUCCESS STATE ─── */
+.form-success {
+display: none;
+padding: 24px;
+background: rgba(37,211,102,0.08);
+border: 1px solid rgba(37,211,102,0.3);
+border-radius: 14px;
+text-align: center;
+}
+.form-success .check { font-size: 2rem; margin-bottom: 8px; }
+.form-success h3 {
+font-family: var(--font-display);
+color: var(--green);
+font-size: 1.1rem;
+margin-bottom: 6px;
+}
+.form-success p { font-size: 0.85rem; color: var(--muted); }
+
+/* ─── FOOTER ─── */
+footer {
+padding: 30px 20px;
+text-align: center;
+border-top: 1px solid var(--border);
+font-size: 0.75rem;
+color: var(--muted);
 }
 
-function handleChatKey(e) { if (e.key === 'Enter') sendChatMsg(); }
-</script>
-</body>
-</html>
+/* ─── STICKY CTA (mobile) ─── */
+.sticky-cta {
+position: fixed;
+bottom: 0; left: 0; right: 0;
+z-index: 98;
+padding: 12px 20px;
+background: rgba(5,10,6,0.92);
+backdrop-filter: blur(12px);
+border-top: 1px solid var(--border);
+display: flex;
+justify-content: center;
+transform: translateY(100%);
+transition: transform 0.4s ease;
+}
+.sticky-cta.visible { transform: translateY(0); }
+.sticky-cta .btn-primary { width: 100%; max-width: 400px; text-align: center; }
+
+/* ─── CHAT MODAL ─── */
+.chat-fab {
+position: fixed;
+bottom: 80px; right: 20px;
+z-index: 200;
+width: 54px; height: 54px;
+background: var(--green);
+border-radius: 50%;
+display: flex; align-items: center; justify-content: center;
+cursor: pointer;
+box-shadow: 0 0 24px var(--green-glow), 0 4px 16px rgba(0,0,0,0.4);
+border: none;
+transition: transform 0.2s;
+f
