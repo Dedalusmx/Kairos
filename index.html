@@ -970,6 +970,44 @@
   }
   .fade-up.visible { opacity: 1; transform: translateY(0); }
 
+  /* ─── MOBILE BASE ─── */
+  html, body { max-width: 100%; overflow-x: hidden; }
+
+  .hero-eyebrow {
+    white-space: normal;
+    word-break: break-word;
+    max-width: 90vw;
+  }
+
+  .btn-primary {
+    word-break: keep-all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+  }
+
+  #vs-api .container > div[style*="grid"] {
+    padding: 0;
+  }
+
+  .noneed-item, .pf-item {
+    word-break: break-word;
+  }
+
+  @media (max-width: 400px) {
+    .hero-headline { font-size: 2rem; letter-spacing: -1px; }
+    .hero-subline { font-size: 1rem; }
+    .wapp-phone { max-width: 100%; }
+    .btn-primary { font-size: 0.9rem; padding: 14px 20px; }
+    .sec-title { font-size: 1.5rem; }
+    .step { padding: 16px 14px; }
+    .product-card { padding: 24px 16px; }
+    .scarcity-box { padding: 24px 16px; }
+    .cta-final-box { padding: 28px 16px; }
+    .proof-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  }
+
   @media (min-width: 600px) {
     .sticky-cta { bottom: 0; }
     .chat-modal { left: auto; right: 20px; bottom: 20px; border-radius: 20px; border: 1px solid rgba(37,211,102,0.2); width: 380px; max-height: 600px; transform: scale(0.95) translateY(10px); opacity: 0; transition: transform 0.3s, opacity 0.3s; }
@@ -989,7 +1027,7 @@
 <!-- HERO -->
 <section id="hero">
   <div class="container" style="text-align:center;">
-    <div class="hero-eyebrow">Sin API · Sin empresa verificada · Sin técnicos</div>
+    <div class="hero-eyebrow">Sin API · Sin empresa · Sin técnicos</div>
     <h1 class="hero-headline">
       Tu WhatsApp vende solo.<br>
       <span class="green">Sin API. Sin complicaciones.</span>
@@ -1053,7 +1091,7 @@
     <div class="sec-label">La pregunta que todos hacen</div>
     <h2 class="sec-title">¿Por qué no usar<br><span style="color:var(--green)">WhatsApp API?</span></h2>
     <p class="sec-sub" style="margin-bottom:28px;">Buena pregunta. Aquí está la diferencia real.</p>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; max-width:500px; margin:0 auto;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; max-width:500px; margin:0 auto;">
       <div class="product-card fade-up" style="padding:20px 14px; border-color:rgba(229,62,62,0.25); background:rgba(229,62,62,0.03);">
         <p style="font-size:0.7rem; text-transform:uppercase; letter-spacing:1.5px; color:var(--red); margin-bottom:14px; font-weight:600;">❌ API oficial</p>
         <div style="display:flex; flex-direction:column; gap:8px; text-align:left;">
